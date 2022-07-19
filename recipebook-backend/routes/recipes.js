@@ -36,4 +36,30 @@ router.get('/lastrecipes', authService.verifyToken, async (req, res, next) => {
     res.json(lastRecipes);
 });
 
+router.get('/totalCount', authService.verifyToken, async (req, res, next) => {
+    let count = await recipeRepo.getCount(req.username);
+    res.json({
+        count: count
+    });
+});
+
+router.get('/singleRecipe', authService.verifyToken, async (req, res, next) => {
+    let recipe = await recipeRepo.getSingleRecipe(req.query.id);
+    let tags = await recipeRepo.getSingleRecipeTags(req.query.id);
+    res.json({
+        recipe: recipe,
+        tags: tags
+    });
+});
+
+router.post('/recipe', authService.verifyToken, async (req, res, next) => {
+    await recipeRepo.saveRecipe(req.username, req.body);
+    res.sendStatus(200);
+});
+
+router.delete('/recipe', authService.verifyToken, async (req, res, next) => {
+    await recipeRepo.deleteSingleRecipe(req.query.id);
+    res.sendStatus(200);
+});
+
 module.exports = router;
