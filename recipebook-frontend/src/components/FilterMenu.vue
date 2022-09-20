@@ -1,11 +1,11 @@
 <template>
     <div class="filterMenu">
-        <span class="filterBtn" :class="{active : isActiveFilterList}"
+        <span class="filterBtn" :class="{active : isActiveFilterList, disabled: disabledFilters}"
             @click="filterListToggle()">
             Adj hozzá címkét <ion-icon name="add"></ion-icon>
         </span>
         <ul v-if="isActiveFilterList" class="filterList">
-            <li v-for="listItem in actualFilterList"
+            <li v-for="listItem in actualFilters"
             :key="listItem.id"
             @click="filterChoosingAndToggle(listItem)">
                 {{ listItem.title }}
@@ -17,58 +17,23 @@
 <script>
 export default {
     name: 'FilterMenu',
+    props: ['actualFilters', 'disabledFilters'],
     data() {
         return {
-            isActiveFilterList: false,
-            filterList: []
+            isActiveFilterList: false
         }
     },
     methods: {
         filterListToggle() {
-            this.isActiveFilterList = !this.isActiveFilterList
-        },
-        filterChoosing(actualItem) {
-           let actualFilter =  this.filterList.find((listItem) => {
-                return actualItem.id === listItem.id
-            })
-            actualFilter.choosed = !actualFilter.choosed
+            if(!this.disabledFilters) {
+                this.isActiveFilterList = !this.isActiveFilterList
+            }
         },
         filterChoosingAndToggle(actualItem) {
-            this.filterChoosing(actualItem)
+            this.$emit('selectFilter', actualItem)
             this.filterListToggle()
-        },
-        async getUserTags() {
-            let token = localStorage.getItem('token');
-            let resp = await fetch(`http://localhost:3000/tags`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                }
-            });
-            let tags = await resp.json();
-            return tags;
         }
 
-    },
-    computed: {
-        actualFilterList() {
-            return this.filterList.filter((item) => {
-                return item.choosed === false
-            })
-        },
-        actualChoosedFilters() {
-            return this.filterList.filter((item) => {
-                return item.choosed === true
-            })
-        }
-    },
-    async created() {
-        let tagsResp = await this.getUserTags()
-        this.filterList = tagsResp.map((tag) => {
-            tag.choosed = false
-            return tag
-        });
     }
 }
 </script>
@@ -94,6 +59,21 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
+
+            &.disabled {
+                background: $disabledMenu;
+                color: $white;
+
+                ion-icon {
+                    color: $white;
+                }
+
+                &:hover {
+                    background: $disabledMenu;
+                    color: $white;
+                    cursor: auto;
+                }
+            }
 
             ion-icon {
                 font-size: 1.1em;

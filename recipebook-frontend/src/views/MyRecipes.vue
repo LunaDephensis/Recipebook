@@ -11,21 +11,13 @@
                     <div class="filtered">
                         <span v-for="choosedFilter in actualChoosedFilters"
                         :key="choosedFilter.id"
-                        @click="filterChoosing(choosedFilter)">{{ choosedFilter.title }} 
-                        <ion-icon name="close"></ion-icon>
+                        @click="filterChoosing(choosedFilter)">
+                            {{ choosedFilter.title }} 
+                            <ion-icon name="close"></ion-icon>
                         </span>
                     </div>
-                    <div class="filterMenu">
-                        <span class="filterBtn" :class="{active : isActiveFilterList}"
-                        @click="filterListToggle()">
-                            Adj hozzá címkét <ion-icon name="add"></ion-icon>
-                        </span>
-                        <ul v-if="isActiveFilterList" class="filterList">
-                            <li v-for="listItem in actualFilterList"
-                            :key="listItem.id"
-                            @click="filterChoosingAndToggle(listItem)">{{ listItem.title }}</li>
-                        </ul>
-                    </div>
+                    <FilterMenu :actualFilters="actualFilterList"
+                                @selectFilter="filterChoosing($event)"/>
                 </div>
                 <div class="timeFilter">
                     <span class="timeTitle"
@@ -114,13 +106,14 @@
 
 import WaveFooter from '../components/WaveFooter.vue'
 import Navigation from '../components/Navigation.vue'
+import FilterMenu from '../components/FilterMenu.vue'
 import {useCreateImage} from '../composables/createImage'
 import {useGetTotalRecipesCount} from '../composables/totalRecipesCounter'
 
 export default {
     name: 'MyRecipes',
     components: {
-        WaveFooter, Navigation
+        WaveFooter, Navigation, FilterMenu
     },
     setup() {
         let createImage = useCreateImage()
@@ -142,18 +135,11 @@ export default {
         }
     },
     methods: {
-        filterListToggle() {
-            this.isActiveFilterList = !this.isActiveFilterList
-        },
         filterChoosing(actualItem) {
            let actualFilter =  this.filterList.find((listItem) => {
                 return actualItem.id === listItem.id
             })
             actualFilter.choosed = !actualFilter.choosed
-        },
-        filterChoosingAndToggle(actualItem) {
-            this.filterChoosing(actualItem)
-            this.filterListToggle()
         },
         timeListToggle() {
             this.isActiveTimeList = !this.isActiveTimeList
@@ -258,6 +244,7 @@ export default {
         }
     },
     async created() {
+        this.$store.commit('startLoading')
         let res = await this.getRecipes()
         this.actualRecipes = res.recipes
         this.actualRecipesCount = res.count
@@ -267,6 +254,7 @@ export default {
             tag.choosed = false
             return tag
         });
+        this.$store.commit('stopLoading')
     }
 }
 </script>
@@ -365,6 +353,7 @@ export default {
                 display: flex;
                 justify-content: flex-end;
                 align-items: center;
+                flex-wrap: wrap;
 
                 @include mobile {
                     justify-content: center;
@@ -375,6 +364,7 @@ export default {
                     position: relative;
                     background: rgba(255, 255, 255, 0.8);
                     padding: 3px 8px;
+                    margin: 1px 0;
                     border-radius: 8px;
                     margin-right: 5px;
                     font-size: 0.9em;
@@ -928,6 +918,10 @@ export default {
             }
 
             .recipeFilters {
+                display: flex;
+                justify-content: flex-end;
+                align-items: flex-end;
+                flex-wrap: wrap;
                 .recipeFilter {
                     position: relative;
                     font-size: 0.8em;
@@ -935,7 +929,12 @@ export default {
                     background: rgba(255, 255, 255, 0.4);
                     padding: 3px 8px;
                     border-radius: 8px;
-                    margin: 0 2px;
+                    margin: 1px 2px;
+
+                    @include tablet {
+                        font-size: 0.7em;
+                        font-weight: 600;
+                    }
                 }
             }
         }

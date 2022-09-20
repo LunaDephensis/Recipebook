@@ -9,14 +9,14 @@ class RecipeRepository {
         ORDER BY rr.id ASC
         LIMIT 12 OFFSET $2 * 12;`;
         let result = await pool.query(getRecipesQuery, [username, page]);
-        return await this.addTags(result.rows);
+        return await this.addTags(result);
     }
     async getCount(username) {
         const getCountQuery = `SELECT COUNT(*) FROM recipebook_recipes rr
         INNER JOIN recipebook_user ru ON ru.id = rr.user_id
         WHERE username = $1;`;
         let result = await pool.query(getCountQuery, [username]);
-        return Number(result.rows[0].count);
+        return Number(result[0].count);
     }
     async getLastRecipes(username) {
         const getLastRecipesQuery = `SELECT rr.id, title, elkeszitesi_ido, letrehozas_datuma, hozzavalok, elkeszitesi_mod, picture FROM recipebook_recipes rr
@@ -25,7 +25,7 @@ class RecipeRepository {
         ORDER BY letrehozas_datuma DESC
         LIMIT 3;`;
         let result = await pool.query(getLastRecipesQuery, [username]);
-        return await this.addTags(result.rows);
+        return await this.addTags(result);
     }
     async addTags(recipes) {
         return await Promise.all(recipes.map( async (recipe) => {
@@ -53,7 +53,7 @@ class RecipeRepository {
         searchRecipesQuery += ` ORDER BY rr.id ASC
             LIMIT 12 OFFSET $2 * 12;`;
         let result = await pool.query(searchRecipesQuery, [username, page]);
-        return await this.addTags(result.rows);
+        return await this.addTags(result);
     }
     async selectedRecipesCount(username, text, time, tags) {
         let selectedRecipesCountQuery = `SELECT COUNT(*) FROM recipebook_recipes rr
@@ -73,30 +73,49 @@ class RecipeRepository {
             selectedRecipesCountQuery += ` AND elkeszitesi_ido <= ${time}`;
         }
         let result = await pool.query(selectedRecipesCountQuery, [username]);
-        return result.rows[0].count;
+        return result[0].count;
     }
     async getSingleRecipe(recipeId) {
-        let getSingleRecipeQuery = `select * from recipebook_recipes where id = $1;`;
-        let result = await pool.query(getSingleRecipeQuery, [recipeId]);
-        return result.rows[0];
+        let getSingleRecipeQuery = `SELECT * FROM recipebook_recipes WHERE id = $1;`;
+        let result = await pool.one(getSingleRecipeQuery, [recipeId]);
+        return result;
     }
     async getSingleRecipeTags(recipeId) {
-        let getSingleRecipeTagsQuery = `select tag_id, title from recipebook_recipe_tag_kapcsolat kapcs
-        inner join recipebook_tags rt on rt.id = kapcs.tag_id
-        where recipe_id = $1;`;
+        let getSingleRecipeTagsQuery = `SELECT tag_id, title FROM recipebook_recipe_tag_kapcsolat kapcs
+        INNER JOIN recipebook_tags rt ON rt.id = kapcs.tag_id
+        WHERE recipe_id = $1;`;
         let result = await pool.query(getSingleRecipeTagsQuery, [recipeId]);
-        return result.rows;
+        return result;
     }
     async deleteSingleRecipe(recipeId) {
-        let deleteSingleRecipeQuery = `delete from recipebook_recipes where id = $1;`;
+        let deleteSingleRecipeQuery = `DELETE FROM recipebook_recipes WHERE id = $1;`;
         await pool.query(deleteSingleRecipeQuery, [recipeId]);
     }
     async saveRecipe(username, newRecipe) {
         let ingredients = newRecipe.ingredientsList.join(',');
-        let saveRecipeQuery = `insert into recipebook_recipes(id, title, user_id, elkeszitesi_ido, letrehozas_datuma, hozzavalok, elkeszitesi_mod, picture)
-        values(nextval('s_recipebook_recipes'), $1, (select id from recipebook_user
-        where username = $2), $3, current_timestamp, $4, $5, $6);`;
-        let result = await pool.query(saveRecipeQuery, [newRecipe.recipeTitle, username, newRecipe.recipeTime, ingredients, newRecipe.elkeszites, newRecipe.picture]);
+        let saveRecipeQuery = `INSERT INTO recipebook_recipes(id, title, user_id, elkeszitesi_ido, letrehozas_datuma, hozzavalok, elkeszitesi_mod)
+        VALUES(nextval('s_recipebook_recipes'), $1, (select id from recipebook_user
+        WHERE username = $2), $3, current_timestamp, $4, $5) returning id;`;
+        let result = await pool.one(saveRecipeQuery, [newRecipe.recipeTitle, username, newRecipe.recipeTime, ingredients, newRecipe.elkeszites]);
+        return result.id;
+    }
+
+    async addRecipeImage(recipeId, recipeImage) {
+        let addRecipeImageQuery = `UPDATE recipebook_recipes SET picture = $2
+                                WHERE id = $1`;
+        await pool.query(addRecipeImageQuery, [recipeId, recipeImage]);
+    }
+
+    async updateRecipe(recipe) {
+        let ingredients = recipe.ingredientsList.join(',');
+        let updateRecipeQuery = `UPDATE recipebook_recipes
+        SET title = $1, elkeszitesi_ido = $2, hozzavalok = $3, elkeszitesi_mod = $4
+        WHERE id = $5`;
+        await pool.query(updateRecipeQuery, [recipe.recipeTitle,
+                                            recipe.recipeTime,
+                                            ingredients,
+                                            recipe.elkeszites,
+                                            recipe.recipeId]);
     }
 
 }

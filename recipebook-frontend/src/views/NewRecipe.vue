@@ -1,68 +1,17 @@
 <template>
     <section class="newRecipePage">
+        <Popup v-if="isActivePopup"
+        @closePopup="closePopup()"
+        :popupTitle = "popupTitle" :popupMessage = "popupMessage"/>
         <Navigation/>
         <div class="mainContent">
             <h2 class="mainTitle">Új recept létrehozása</h2>
-            <div class="recipeForm">
-                <div class="titleAndTime">
-                    <span class="titleBox">
-                        <h3>Recept címe</h3>
-                        <input v-model="newRecipe.recipeTitle" type="text">
-                    </span>
-                    <span class="timeBox">
-                        <h3>Elkészítési idő</h3>
-                        <span><input v-model="newRecipe.recipeTime" type="number"> perc</span>
-                        </span>
-                </div>
-                <div class="tagSettings">
-                    <h3>Címke hozzárendelése</h3>
-                    <p>Minden recepthez maximum 2 címke adható hozzá.</p>
-                    <FilterMenu/>
-                    <div class="filtered">
-                        <span>leves <ion-icon name="close"></ion-icon></span>
-                        <span>egytál <ion-icon name="close"></ion-icon></span>
-                    </div>
-                    <div class="createFilter">
-                        <div class="createFilterInfo">
-                            <h3>Új címke</h3>
-                            <p>Címke létrehozásához írd a mezőbe a címke nevét majd kattints a plusz gombra. Ezután már kiválaszthatod a fenti listából.</p>
-                        </div>
-                        <div class="inputBox">
-                            <input type="text" placeholder="Új címke neve...">
-                            <ion-icon name="add-circle"></ion-icon>
-                        </div>
-                    </div>
-                </div>
-                <div class="addPicture">
-                    <h3>Kép hozzáadása</h3>
-                    <input type="file">
-                </div>
-                <div class="addIngredients">
-                    <div class="wave"></div>
-                    <h3>Hozzávalók</h3>
-                    <p>Adj meg új hozzávalót majd kattints a plusz gombra.</p>
-                    <div class="inputBox">
-                        <input type="text" placeholder="Új hozzávaló..."
-                        v-model="newIngredientInputValue">
-                        <ion-icon @click="addIngredient()" name="add-circle"></ion-icon>
-                    </div>
-                    <ul>
-                        <li v-for="(ingredient, i) in newRecipe.ingredientsList" :key="i">
-                            {{ ingredient }}
-                            <ion-icon @click="deleteIngredient(i)" name="remove-circle"></ion-icon>
-                        </li>
-                    </ul> 
-                </div>
-                <div class="addElkeszites">
-                    <h3>Elkészítési mód</h3>
-                    <textarea v-model="newRecipe.elkeszites"
-                        placeholder="Ide írd az elkészítési módot. Az új bekedésekhez nyomj Enter-t.">
-                    </textarea>
-                </div>
-            </div>
+            <RecipeEditor @changeFilterList="actualChoosedFilterIds = $event"
+                            @changeRecipe="newRecipe = $event" picture = "grill.jpg"
+                            @uploadImage="recipeImage = $event"/>
             <div class="submitButtons">
                 <button class="submitBtn" @click="saveNewRecipe()">Mentés</button>
-                <button class="cancelBtn">Mégse</button>
+                <button class="cancelBtn" @click="cancel()">Mégse</button>
             </div>
         </div>
         <WaveFooter/>
@@ -72,40 +21,57 @@
 <script>
     import WaveFooter from '../components/WaveFooter.vue'
     import Navigation from '../components/Navigation.vue'
-    import FilterMenu from '../components/FilterMenu.vue'
+    import RecipeEditor from '../components/RecipeEditor.vue'
+    import Popup from '../components/Popup.vue'
 
 export default {
     name: 'NewRecipe',
     components: {
-        WaveFooter, Navigation, FilterMenu
+        WaveFooter, Navigation, RecipeEditor, Popup
     },
     data() {
         return {
-            newRecipe: {
-                recipeTitle: '',
-                recipeTime: undefined,
-                elkeszites: '',
-                ingredientsList: [],
-                picture: 'grill.jpg'
-            },
-            newIngredientInputValue: ''
+            newRecipe: {},
+            actualChoosedFilterIds: [],
+            recipeImage: undefined,
+            isActivePopup: false,
+            popupTitle: 'A mezők kitöltése kötelező!',
+            popupMessage: 'Új recept létrehozásához töltsd ki az összes mezőt és adj hozzá képet.'
         }
     },
     methods: {
-        deleteIngredient(i) {
-            this.newRecipe.ingredientsList.splice(i, 1)
+        openPopup() {
+            this.isActivePopup = true
+            document.documentElement.style.overflow = "hidden";
         },
-        addIngredient() {
-            if(this.newIngredientInputValue) {
-                this.newRecipe.ingredientsList.push(this.newIngredientInputValue)
-                this.newIngredientInputValue = ''
-            }
+        closePopup() {
+            this.isActivePopup = false
+            document.documentElement.style.overflow = "auto";
+        },
+        async uploadImage(recipeId) {
+            let token = localStorage.getItem('token');
+            let formData = new FormData()
+            formData.append('recipeImage', this.recipeImage)
+            formData.append('recipeId', recipeId)
+            console.log(this.recipeImage)
+            await fetch('http://localhost:3000/recipes/uploadimage', {
+                method: 'POST',
+                headers: {
+                            /*'Content-Type': 'multipart/form-data',*/
+                            'Authorization': 'Bearer ' + token,
+                            'Accept': 'application/json'
+                        },
+                body: formData
+            })
+
         },
         saveNewRecipe() {
             if(this.newRecipe.recipeTitle &&
                 this.newRecipe.recipeTime &&
                 this.newRecipe.elkeszites &&
+                this.recipeImage &&
                 this.newRecipe.ingredientsList.length > 0) {
+                    this.$store.commit('startLoading')
                     let token = localStorage.getItem('token');
                     fetch('http://localhost:3000/recipes/recipe', {
                         method: 'POST',
@@ -113,13 +79,28 @@ export default {
                             'Content-Type': 'application/json',
                             'Authorization': 'Bearer ' + token
                         },
-                        body: JSON.stringify(this.newRecipe)
+                        body: JSON.stringify({
+                            newRecipe: this.newRecipe,
+                            newRecipeTags: this.actualChoosedFilterIds
+                        })
                     }).then((resp) => {
+                        return resp.json()
+                        /*this.$store.commit('stopLoading')
                         if(resp.ok) {
                             this.$router.push({path: '/myrecipes'});
-                        }
+                        }*/
+                    }).then( async (recipeData) => {
+                        await this.uploadImage(recipeData.recipeId)
+                        this.$store.commit('stopLoading')
+                        this.$router.push({path: '/myrecipes'})
                     })
             }
+            else {
+                this.openPopup()
+            }
+        },
+        cancel() {
+            this.$router.push({path: '/myrecipes'});
         }
     }
 }
@@ -171,449 +152,6 @@ export default {
 
             @include mobile {
                 font-size: 1.3em;
-            }
-        }
-        .recipeForm {
-            position: relative;
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            grid-template-rows: auto auto auto auto;
-            column-gap: 30px;
-            margin-bottom: 30px;
-
-            @include tablet {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-            }
-
-            .titleAndTime {
-                position: relative;
-                grid-column: 1/2;
-                grid-row: 1/2;
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                flex-direction: column;
-                background: $black;
-                color: $main1;
-                padding: 25px;
-                border-radius: 8px;
-                margin-bottom: 25px;
-
-                @include tablet {
-                    padding: 35px;
-                    margin-bottom: 35px;
-                }
-
-                @include mobile {
-                    padding: 20px;
-                }
-
-                .titleBox, .timeBox {
-                    margin-bottom: 20px;
-
-                    h3 {
-                        font-weight: 600;
-                        margin-bottom: 5px;
-                    }
-
-                    input {
-                        border: none;
-                        outline: none;
-                        border-radius: 15px;
-                        padding: 4px 10px;
-                        color: $black;
-                        font-weight: 600;
-                        font-size: 1em;
-                        background: rgba(255, 255, 255, 0.5);
-
-                        &:hover, &:focus {
-                            background: rgba(255, 255, 255, 0.7);
-                        }
-                    }
-                }
-
-                .titleBox {
-                    position: relative;
-                    width: 100%;
-                    input {
-                        width: 100%;
-                    }
-                }
-
-                .timeBox {
-                    span {
-                        font-weight: 600;
-
-                        input {
-                            max-width: 80px;
-                            margin-right: 5px;
-                        }
-                    }
-                }
-            }
-
-            .tagSettings {
-                position: relative;
-                grid-column: 2/3;
-                grid-row: 1/3;
-                background: $main1;
-                padding: 25px;
-                border-radius: 8px;
-                width: 100%;
-
-                @include tablet {
-                    margin-bottom: 35px;
-                    padding: 35px;
-                }
-
-                @include mobile {
-                    padding: 20px;
-                }
-
-                h3 {
-                    font-weight: 600;
-                    color: $black;
-                    margin-bottom: 3px;
-                }
-
-                p {
-                    color: $black;
-                    font-size: 0.8em;
-                    margin-bottom: 10px;
-                }
-
-                .filtered {
-                    margin: 20px 0;
-                    position: relative;
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: center;
-
-                    span {
-                        position: relative;
-                        font-size: 0.8em;
-                        font-weight: 600;
-                        background: rgba(255, 255, 255, 0.4);
-                        color: $black;
-                        padding: 3px 8px;
-                        border-radius: 8px;
-                        margin: 0 2px;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-
-                        ion-icon {
-                            margin-left: 3px;
-                            cursor: pointer;
-                            padding: 3px;
-                            border-radius: 50%;
-                            background: rgba(255, 255, 255, 0.5);
-
-                            &:hover {
-                                background: $white;
-                            }
-                        }
-                    }
-                }
-
-                .createFilter {
-
-                    @include tablet {
-                        position: relative;
-                        width: 100%;
-                    }
-
-                    .inputBox {
-                        position: relative;
-                        width: 100%;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-
-                        input {
-                            border: none;
-                            outline: none;
-                            background: rgba(255, 255, 255, 0.4);
-                            font-size: 0.9em;
-                            font-weight: 600;
-                            padding: 3px 15px;
-                            color: $black;
-                            border-radius: 20px;
-                            max-width: calc(100% - 42px);
-
-                            &::placeholder {
-                                color: $blackborder;
-                                font-weight: 400;
-                            }
-
-                            @include tablet {
-                                width: 100%;
-                            }
-
-                        }
-
-                        ion-icon {
-                            margin: 0 5px;
-                            font-size: 2em;
-                            color: $black;
-                            cursor: pointer;
-                        }
-                    }
-                }
-            }
-            .addPicture {
-                position: relative;
-                grid-column: 1/3;
-                grid-row: 3/4;
-                margin-bottom: 25px;
-
-                @include tablet {
-                    position: relative;
-                    width: 100%;
-                    margin-bottom: 35px;
-                    background: rgba(51, 51, 51, 0.9);
-                    padding: 30px;
-                    border-radius: 6px;
-                }
-
-                @include mobile {
-                    padding: 20px;
-                }
-
-                h3 {
-                    font-weight: 600;
-                    color: $black;
-                    margin-bottom: 5px;
-
-                    @include tablet {
-                        margin-bottom: 10px;
-                        color: $white;
-                    }
-                }
-
-                input {
-                    @include tablet {
-                        color: $white;
-                    }
-
-                    @include mobile {
-                        font-size: 0.8em;
-                    }
-                }
-
-                input::file-selector-button {
-                    height: 33px;
-                    width: 198px;
-                    font-size: 1.1em;
-                    padding: 6px 25px;
-                    background: $main2light;
-                    color: $black;
-                    font-weight: 600;
-                    border: none;
-                    outline: none;
-                    border-radius: 25px;
-                    cursor: pointer;
-
-                    &:hover {
-                        background: $main2;
-                        color: $white;
-                    }
-
-                    @include mobile {
-                        font-size: 0.9em;
-                        width: 135px;
-                        padding: 6px 15px;
-                    }
-                }
-            }
-            .addIngredients {
-                position: relative;
-                grid-column: 3/4;
-                grid-row: 1/5;
-                justify-self: center;
-                align-self: start;
-                background: $main1;
-                width: 100%;
-                max-width: 100%;
-                padding: 10px 30px 30px;
-                margin-top: 40px;
-                border-bottom-right-radius: 6px;
-                border-bottom-left-radius: 6px;
-
-                @include tablet {
-                    border-top-left-radius: 6px;
-                    border-top-right-radius: 6px;
-                    padding: 30px;
-                    margin-top: 0;
-                    margin-bottom: 35px;
-                }
-
-                @include mobile {
-                    padding: 20px;
-                }
-
-                .wave {
-                    position: absolute;
-                    top: -45px;
-                    left: 0;
-                    width: 100%;
-                    height: 50px;
-                    background: url(../../public/images/wave3.png);
-                    background-size: 750px 50px;
-                    background-repeat: no-repeat;
-                    overflow: hidden;
-
-                    @include tablet {
-                        display: none;
-                    }
-                }
-
-                h3 {
-                    color: $black;
-                    font-weight: 600;
-                    margin-bottom: 5px;
-                    width: 100%;
-                }
-
-                p {
-                    color: $black;
-                    font-size: 0.8em;
-                    margin-bottom: 20px;
-                    width: 100%;
-                }
-
-                .inputBox {
-                    position: relative;
-                    width: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    margin-bottom: 20px;
-
-                    input {
-                        border: none;
-                        outline: none;
-                        background: rgba(255, 255, 255, 0.4);
-                        font-size: 0.9em;
-                        font-weight: 600;
-                        padding: 3px 15px;
-                        color: $black;
-                        border-radius: 20px;
-                        max-width: calc(100% - 42px);
-
-                        &::placeholder {
-                            color: $blackborder;
-                            font-weight: 400;
-                        }
-
-                        @include tablet {
-                            width: 100%;
-                        }
-                    }
-
-                    ion-icon {
-                        margin: 0 5px;
-                        font-size: 2em;
-                        color: $black;
-                        cursor: pointer;
-                    }
-                }
-
-                ul {
-                    position: relative;
-                    width: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: flex-start;
-                    flex-direction: column;
-                    padding-left: 20px;
-
-                    @include tabletS {
-                        padding-left: 20px;
-                    }
-
-                    @include mobile {
-                        padding-left: 10px;
-                    }
-
-                    li {
-                        position: relative;
-                        list-style: none;
-                        color: $black;
-                        width: 100%;
-                        padding: 5px 0;
-                        font-weight: 500;
-                        margin-left: 1em;
-                        display: flex;
-                        justify-content: flex-start;
-                        align-items: center;
-
-                        @include tablet {
-                            font-size: 1.1em;
-                        }
-
-                        @include mobile {
-                            font-size: 1em;
-                            padding-right: 20px;
-                        }
-
-                        &::before {
-                            content: '\2022';
-                            color: $blackborder;
-                            display: inline-block;
-                            font-size: 1.3em;
-                            width: 1em;
-                            margin-left: -1em;
-                        }
-
-                        ion-icon {
-                            font-size: 1.3em;
-                            margin-left: 5px;
-                            color: $black;
-                            cursor: pointer;
-                        }
-                    }
-                }
-            }
-            .addElkeszites {
-                position: relative;
-                grid-column: 1/3;
-                grid-row: 4/5;
-
-                @include tablet {
-                    width: 100%;
-                }
-
-                h3 {
-                    font-weight: 600;
-                    color: $black;
-                    margin-bottom: 5px;
-
-                    @include tablet {
-                        margin-left: 5px;
-                    }
-                }
-
-                textarea {
-                    width: 100%;
-                    height: 300px;
-                    background: $main1;
-                    border: none;
-                    outline: none;
-                    border-radius: 8px;
-                    padding: 10px 20px;
-                    color: $black;
-                    resize: none;
-
-                    &::placeholder {
-                        color: $blackborder;
-                    }
-                }
             }
         }
 

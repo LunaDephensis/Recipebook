@@ -1,7 +1,26 @@
 <template>
-  
-  <router-view/>
+  <div>
+     <Loader v-if="isLoading"/>
+    <router-view/>
+  </div>
+ 
 </template>
+
+<script>
+
+import Loader from './components/Loader.vue'
+
+export default {
+  components: {
+    Loader
+  },
+  computed: {
+    isLoading() {
+      return this.$store.getters.isLoading
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 

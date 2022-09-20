@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const recipeRepo = require('../model/recipe.repository');
+const kapcsolatRepo = require('../model/kapcsolat.repository');
 const authService = require('../services/auth.services');
+const pool = require('../model/pool');
+const upload = require('../services/upload.services');
 
 router.get('/', authService.verifyToken, async (req, res, next) => {
     let page = 0;
@@ -53,13 +56,58 @@ router.get('/singleRecipe', authService.verifyToken, async (req, res, next) => {
 });
 
 router.post('/recipe', authService.verifyToken, async (req, res, next) => {
-    await recipeRepo.saveRecipe(req.username, req.body);
-    res.sendStatus(200);
+    let newRecipeId;
+    pool.tx(async () => {
+        newRecipeId = await recipeRepo.saveRecipe(req.username, req.body.newRecipe);
+        await kapcsolatRepo.saveAllNewKapcsolat(newRecipeId, req.body.newRecipeTags);
+
+    }).then(() => {
+        res.json({recipeId: newRecipeId});
+    });
 });
 
 router.delete('/recipe', authService.verifyToken, async (req, res, next) => {
-    await recipeRepo.deleteSingleRecipe(req.query.id);
-    res.sendStatus(200);
+    pool.tx(async () => {
+        await kapcsolatRepo.deleteSingleRecipeKapcsolat(req.query.id);
+        await recipeRepo.deleteSingleRecipe(req.query.id);
+    }).then(() => {
+        res.sendStatus(200);
+    });
+});
+
+router.put('/recipe', authService.verifyToken, async (req, res, next) => {
+    pool.tx( async () => {
+        await recipeRepo.updateRecipe(req.body.recipe);
+        let oldTags = await recipeRepo.getSingleRecipeTags(req.body.recipe.recipeId);
+        let oldTagIds = oldTags.map((oldTag) => {
+            return oldTag.tag_id;
+        });
+        let newTagIds = [];
+        req.body.tags.forEach((tagId) => {
+            if(!oldTagIds.includes(tagId)) {
+                newTagIds.push(tagId);
+            }
+        });
+        await kapcsolatRepo.saveAllNewKapcsolat(req.body.recipe.recipeId, newTagIds);
+        oldTagIds = oldTagIds.filter((oldTagId) => {
+            return !req.body.tags.includes(oldTagId);
+        });
+        await kapcsolatRepo.deleteOldTags(req.body.recipe.recipeId, oldTagIds);
+    }).then(() => {
+        res.sendStatus(200);
+    });
+});
+
+router.post('/uploadimage', [authService.verifyToken, upload.single('recipeImage')], async (req, res, next) => {
+    let recipe = await recipeRepo.getSingleRecipe(req.body.recipeId);
+    if(recipe) {
+        await recipeRepo.addRecipeImage(req.body.recipeId, req.file.filename);
+        res.sendStatus(200);
+    }
+    else {
+        res.sendStatus(404);
+    }
+    console.log(req.file.filename);
 });
 
 module.exports = router;

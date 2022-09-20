@@ -1,12 +1,23 @@
 <template>
     <section class="recipePage">
+        <div class="popUpBox" v-if="isActivePopup">
+        <div class="popUp">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <h2 class="popUpTitle">Biztosan törlöd a receptet?</h2>
+            <p class="popUpMessage">A művelet nem visszavonható. Ha nem szeretnéd törölni a receptet, kattints a "Mégse" gombra.</p>
+            <div class="popUpButtons">
+                <button class="popUpBtn deleteBtn" @click="deleteRecipe(recipe.id)">Törlés</button>
+                <button class="popUpBtn cancelBtn" @click="popUpToggle()">Mégse</button>
+            </div>
+        </div>
+    </div>
         <Navigation :recipesCount="totalRecipesCount"/>
         <div class="mainContent">
             <div class="editorMenu">
                 <h2 class="recipeTitle">{{ recipe.title }}</h2>
                 <div class="editor">
-                    <button><ion-icon name="pencil-sharp"></ion-icon></button>
-                    <button @click="deleteRecipe(recipe.id)"><ion-icon name="trash-outline"></ion-icon></button>
+                    <button @click="redirectToRecipeEditor(recipe.id)"><ion-icon name="pencil-sharp"></ion-icon></button>
+                    <button @click="popUpToggle()"><ion-icon name="trash-outline"></ion-icon></button>
                 </div>
             </div>
             <div class="recipeInfo">
@@ -57,10 +68,17 @@
                 recipe: {},
                 tags: [],
                 ingredients: [],
-                elkeszitesBekezdesek: []
+                elkeszitesBekezdesek: [],
+                isActivePopup: false
             }
         },
         methods: {
+            popUpToggle() {
+                this.isActivePopup = !this.isActivePopup
+            },
+            redirectToRecipeEditor(id) {
+                this.$router.push({path: `/recipe/edit/${id}`});
+            },
             async getRecipe(id) {
                 let token = localStorage.getItem('token');
                 let resp = await fetch(`http://localhost:3000/recipes/singleRecipe?id=${id}`, {
@@ -74,6 +92,7 @@
                 return recipeResp;
             },
             async deleteRecipe(id) {
+                console.log('frontend');
                 let token = localStorage.getItem('token');
                 let resp = await fetch(`http://localhost:3000/recipes/recipe?id=${id}`, {
                     method: 'DELETE',
@@ -88,6 +107,7 @@
             }
         },
         async created() {
+            this.$store.commit('startLoading')
             let recipeResp = await this.getRecipe(this.$route.params.id);
             this.recipe = recipeResp.recipe
             this.tags = recipeResp.tags
@@ -95,6 +115,7 @@
             this.elkeszitesBekezdesek = this.recipe.elkeszitesi_mod.split('\n').map((bekezdes) => {
                 return bekezdes.trim()
             })
+            this.$store.commit('stopLoading')
         }
     }
 </script>
@@ -192,7 +213,7 @@
                     cursor: pointer;
                     margin-left: 15px;
                     opacity: 0.9;
-                    z-index: 10;
+                    z-index: 100;
 
                     &:hover {
                         opacity: 1;
@@ -451,6 +472,126 @@
                 p {
                     color: $black;
                     margin-bottom: 12px;
+                }
+            }
+        }
+
+        .popUpBox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: $blackborder;
+        z-index: 1000000;
+        }
+
+        .popUp {
+            position: relative;
+            width: 600px;
+            min-height: 250px;
+            height: auto;
+            background: $white;
+            border-radius: 18px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-direction: column;
+            padding: 25px 20px;
+
+            @include tabletS {
+                max-width: 100%;
+                margin: 0 20px;
+            }
+
+            ion-icon {
+                font-size: 2.5em;
+                color: $errorMessage;
+                margin-bottom: 10px;
+            }
+
+            h2 {
+                color: $errorMessage;
+                font-weight: 600;
+                margin-bottom: 15px;
+                text-align: center;
+
+                @include mobile {
+                    font-size: 1.2em;
+                }
+            }
+
+            .popUpMessage {
+                color: $black;
+                font-weight: 500;
+                line-height: 1.1em;
+                text-align: center;
+
+                @include mobile {
+                    font-size: 0.9em;
+                }
+            }
+
+            .popUpButtons {
+                position: relative;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 20px 0;
+
+                @include mobile {
+                    flex-direction: column;
+                }
+            }
+
+            .popUpBtn {
+                font-size: 1.6em;
+                font-weight: 600;
+                letter-spacing: 2px;
+                padding: 8px 25px;
+                border: none;
+                border-radius: 10px;
+                background: $main1;
+                color: $black;
+                cursor: pointer;
+
+                &:hover {
+                    background: $main1hover;
+                    color: $white;
+                }
+
+                @include mobile {
+                    font-size: 1.5em;
+                }
+
+                &.deleteBtn {
+                    margin-right: 20px;
+                    color: $main1;
+                    background: $black;
+
+                    @include mobile {
+                        margin-right: 0;
+                        margin-bottom: 20px;
+                    }
+
+                    &:hover {
+                        color: $main1hover;
+                        background: #222;
+                    }
+                }
+
+                &.cancelBtn {
+                    color: $black;
+                    background: $main1;
+
+                    &:hover {
+                        color: $white;
+                        background: $main1hover;
+                    }
                 }
             }
         }

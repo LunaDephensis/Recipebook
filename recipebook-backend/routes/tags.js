@@ -8,4 +8,9 @@ router.get('/', authService.verifyToken, async (req, res, next) => {
     res.json(tags);
 });
 
+router.post('/newtag', authService.verifyToken, async (req, res, next) => {
+    await tagRepo.createNewTag(req.username, req.body.tagname);
+    res.sendStatus(200);
+});
+
 module.exports = router;

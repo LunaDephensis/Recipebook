@@ -38,6 +38,14 @@ const routes = [
       requiresAuth: true
     },
     component: () => import('../views/NewRecipe.vue')
+  },
+  {
+    path: '/recipe/edit/:id',
+    name: 'EditRecipe',
+    meta: {
+      requiresAuth: true
+    },
+    component: () => import('../views/EditRecipe.vue')
   }
 ]
 

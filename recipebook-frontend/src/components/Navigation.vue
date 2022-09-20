@@ -1,6 +1,6 @@
 <template>
     <nav>
-            <h3 class="logo">Recipe Book</h3>
+            <router-link to="/myrecipes"><h3 class="logo">Recipe Book</h3></router-link>
             <ul class="desktopMenu">
                 <li><router-link to="/newrecipe" class="newRecipeBtn"><ion-icon name="add-outline"></ion-icon> Új Recept</router-link></li>
                 <li><a href="#" class="profileBtn"><ion-icon name="person"></ion-icon></a></li>
@@ -11,7 +11,7 @@
                 <ion-icon name="close-outline" v-if="isActiveMobileMenu"></ion-icon>
             </div>
             <ul class="mobileMenu" :class="{active: isActiveMobileMenu}">
-                <li><a href="#"><ion-icon name="add-outline"></ion-icon> Új Recept</a></li>
+                <li><router-link to="/newrecipe"><ion-icon name="add-outline"></ion-icon> Új Recept</router-link></li>
                 <li @click="scrollTo('bannerAndSearch')"><a><ion-icon name="search"></ion-icon> Receptek keresése</a></li>
                 <li @click="scrollTo('lastRecipes')" v-if="recipesCount > 3"><a><ion-icon name="timer-outline"></ion-icon> Legutóbbi receptjeid</a></li>
                 <li @click="scrollTo('allRecipes')"><a ><ion-icon name="fast-food-outline"></ion-icon> Összes recepted</a></li>
@@ -47,6 +47,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+a {
+    text-decoration: none;
+}
 
 nav {
     position: fixed;
@@ -235,7 +239,7 @@ nav {
     .mobileMenu {
         position: absolute;
         top: 80px;
-        right: -710px;
+        right: -60%;
         display: flex;
         justify-content: flex-start;
         align-items: center;
