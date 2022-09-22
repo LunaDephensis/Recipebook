@@ -24,13 +24,12 @@
     import WaveFooter from '../components/WaveFooter.vue'
     import Navigation from '../components/Navigation.vue'
     import RecipeEditor from '../components/RecipeEditor.vue'
-    import Loader from '../components/Loader.vue'
     import Popup from '../components/Popup.vue'
 
 export default {
     name: 'EditRecipe',
     components: {
-        WaveFooter, Navigation, RecipeEditor, Loader, Popup
+        WaveFooter, Navigation, RecipeEditor, Popup
     },
     data() {
         return {

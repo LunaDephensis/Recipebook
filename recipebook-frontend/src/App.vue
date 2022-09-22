@@ -1,18 +1,17 @@
 <template>
   <div>
-     <Loader v-if="isLoading"/>
+     <PageLoader v-if="isLoading"/>
     <router-view/>
   </div>
- 
 </template>
 
 <script>
 
-import Loader from './components/Loader.vue'
+import PageLoader from './components/PageLoader.vue'
 
 export default {
   components: {
-    Loader
+    PageLoader
   },
   computed: {
     isLoading() {
@@ -28,11 +27,18 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 #app {
-  /*font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;*/
+
+  @include large {
+    font-size: 22px;
+  }
+ 
+ @include tablet {
+   font-size: 22px;
+ }
+
+ @include mobile {
+   font-size: 16px;
+ }
 }
 
 * {

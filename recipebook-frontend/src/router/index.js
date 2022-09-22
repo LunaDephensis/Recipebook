@@ -1,19 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../views/Login.vue'
+import Main from '../views/Main.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'Login',
-    component: Login
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    name: 'Main',
+    component: Main
   },
   {
     path: '/myrecipes',
@@ -75,7 +67,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
     else {
-      next({name: 'Login'})
+      next({name: 'Main'})
     }
   }
   else {
