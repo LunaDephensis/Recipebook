@@ -28,7 +28,7 @@ export default {
                 username: this.username,
                 password: this.password
             };
-            let resp = await fetch('http://localhost:3000/auth/login', {
+            let resp = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(userData)
@@ -78,7 +78,6 @@ export default {
         max-width: 100%;
         font-size: 16px;
     }
-
 
     h3 {
         text-transform: uppercase;

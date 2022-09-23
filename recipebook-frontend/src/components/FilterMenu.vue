@@ -41,18 +41,19 @@ export default {
 <style lang="scss" scoped>
     .filterMenu {
         position: relative;
-        width: 198px;
+        width: 13.5em;
         .filterBtn {
             height: 33px;
-            width: 198px;
+            width: 100%;
+            min-width: 13.5em;
             font-size: 0.9em;
-            padding: 6px 25px;
+            padding: 0.4em 1.5em;
             background: $main2light;
             color: $black;
             font-weight: 600;
             border: none;
             outline: none;
-            border-radius: 25px;
+            border-radius: 1.5em;
             box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2),
                         0 -2px 8px rgba(0,0,0,0.05);
             cursor: pointer;
@@ -78,9 +79,9 @@ export default {
             ion-icon {
                 font-size: 1.1em;
                 text-transform: none;
-                margin-left: 8px;
+                margin-left: 0.5em;
                 color: $black;
-                --ionicon-stroke-width: 55px;
+                --ionicon-stroke-width: 3.4em;
                 transition: 0.3s;
             }
 
@@ -109,14 +110,14 @@ export default {
             left: 0;
             width: 100%;
             background: $black;
-            border-bottom-left-radius: 25px;
-            border-bottom-right-radius: 25px;
+            border-bottom-left-radius: 1.5em;
+            border-bottom-right-radius: 1.5em;
             overflow: hidden;
             z-index: 101;
 
             li {
                 list-style: none;
-                padding: 5px 20px;
+                padding: 0.3em 1.25em;
                 cursor: pointer;
                 font-size: 0.9em;
                 font-weight: 600;

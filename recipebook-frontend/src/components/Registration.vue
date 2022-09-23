@@ -1,13 +1,13 @@
 <template>
     <div class="signUpBox">
         <h3>Regisztrálj!</h3>
-        <span class="errorMessage">{{signUpErrorMessage}}</span>
-        <input name="username" type="text" v-model="signUpUsername" placeholder="Felhasználónév">
-        <input name="email" type="email" v-model="signUpEmail" placeholder="Email">
+        <span class="errorMessage">{{errorMessage}}</span>
+        <input name="username" type="text" v-model="username" placeholder="Felhasználónév">
+        <input name="email" type="email" v-model="email" placeholder="Email">
         <div class="passwordBox">
-          <input name="password" :type="passwordType" v-model="signUpPassword" placeholder="Jelszó">
+          <input name="password" :type="passwordType" v-model="password" placeholder="Jelszó">
           <ion-icon name="eye"
-            :class="{active : isActivePasswordShowing}"
+            :class="{active : passwordType === 'text'}"
             @click="passwordShowing()">
           </ion-icon>
         </div>
@@ -22,12 +22,11 @@ export default {
     emits: ['loginToggle'],
     data() {
         return {
-            isActivePasswordShowing: false,
             passwordType: 'password',
-            signUpUsername: undefined,
-            signUpEmail: undefined,
-            signUpPassword: undefined,
-            signUpErrorMessage: undefined
+            username: undefined,
+            email: undefined,
+            password: undefined,
+            errorMessage: undefined
         }
     },
     methods: {
@@ -38,33 +37,32 @@ export default {
             else {
                 this.passwordType = 'password'
             }
-            this.isActivePasswordShowing = !this.isActivePasswordShowing
         },
         async signUp() {
-            if(this.signUpUsername && this.signUpPassword && this.signUpEmail) {
-                let newUser = {
-                    username: this.signUpUsername,
-                    password: this.signUpPassword,
-                    email: this.signUpEmail
-                };
+            if(!this.username || !this.password || !this.email) {
+                this.errorMessage = "A mezők kitöltése kötelező!"
+                return
+            }
 
-                this.signUpErrorMessage = undefined;
+            let newUser = {
+                username: this.username,
+                password: this.password,
+                email: this.email
+            };
 
-                let resp = await fetch('http://localhost:3000/auth/signup', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(newUser)
-                });
-                if(resp.ok) {
-                    let token = await resp.json();
-                    this.redirectToMyRecipes(token);
-                }
-                else {
-                    this.signUpErrorMessage = "Foglalt felhasználónév vagy email cím!";
-                }
+            this.errorMessage = undefined;
+
+            let resp = await fetch(`${process.env.BACKEND_URL}/auth/signup`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(newUser)
+            });
+            if(resp.ok) {
+                let token = await resp.json();
+                this.redirectToMyRecipes(token);
             }
             else {
-                this.signUpErrorMessage = "A mezők kitöltése kötelező!"
+                this.errorMessage = "Foglalt felhasználónév vagy email cím!";
             }
         },
         redirectToMyRecipes(token) {

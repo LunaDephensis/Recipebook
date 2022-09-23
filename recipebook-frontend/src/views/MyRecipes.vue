@@ -170,7 +170,7 @@ export default {
         },
         async getLastRecipes() {
             let token = localStorage.getItem('token');
-            let resp = await fetch(`http://localhost:3000/recipes/lastrecipes`, {
+            let resp = await fetch(`${process.env.BACKEND_URL}/recipes/lastrecipes`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ export default {
         },
         async getUserTags() {
             let token = localStorage.getItem('token');
-            let resp = await fetch(`http://localhost:3000/tags`, {
+            let resp = await fetch(`${process.env.BACKEND_URL}/tags`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -203,7 +203,7 @@ export default {
             this.$router.push({path: `/recipe/${id}`});
         },
         createRecipesURL() {
-            let searchURL = `http://localhost:3000/recipes?page=${this.pageCounter}`;
+            let searchURL = `${process.env.BACKEND_URL}/recipes?page=${this.pageCounter}`;
             if(this.searchInputText) {
                 searchURL += `&title=${this.searchInputText}`;
             }
@@ -274,23 +274,23 @@ export default {
 .bannerAndSearch {
     position: relative;
     width: 100%;
-    height: 590px;
+    height: 36.9em;
     background: url(../../public/images/logmac6.png);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    padding: 0 80px;
-    padding-top: 80px;
+    padding: 0 5em;
+    padding-top: 5em;
     display: flex;
     justify-content: flex-start;
     align-items: center;
 
     @include tablet {
-        padding: 0 30px;
+        padding: 0 1.9em;
     }
 
     @include tabletS {
-        padding: 0 25px;
+        padding: 0 1.5em;
         justify-content: center;
     }
 
@@ -300,12 +300,12 @@ export default {
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        width: 600px;
-        max-width: 600px;
+        width: 37.5em;
+        max-width: 37.5em;
 
         @include tabletS {
             width: 100%;
-            max-width: 580px;
+            max-width: 36.25em;
         }
 
         .searchBox {
@@ -314,10 +314,10 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 8px 20px;
-            border-radius: 10px;
+            padding: 0.5em 1.25em;
+            border-radius: 0.6em;
             background: $white;
-            margin-bottom: 25px;
+            margin-bottom: 1.5em;
 
             .searchInput {
                 width: 100%;
@@ -331,7 +331,7 @@ export default {
             ion-icon {
                 color: $black;
                 opacity: 0.7;
-                margin-left: 10px;
+                margin-left: 0.6em;
             }
         }
 
@@ -341,7 +341,7 @@ export default {
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 1.5em;
 
             @include mobile {
                 flex-direction: column-reverse;
@@ -357,16 +357,16 @@ export default {
 
                 @include mobile {
                     justify-content: center;
-                    margin-top: 15px;
+                    margin-top: 0.9em;
                 }
 
                 span {
                     position: relative;
                     background: rgba(255, 255, 255, 0.8);
-                    padding: 3px 8px;
-                    margin: 1px 0;
-                    border-radius: 8px;
-                    margin-right: 5px;
+                    padding: 0.2em 0.5em;
+                    margin: 0.06em 0;
+                    border-radius: 0.5em;
+                    margin-right: 0.3em;
                     font-size: 0.9em;
                     font-weight: 500;
                     color: $black;
@@ -377,9 +377,9 @@ export default {
                                 0 -2px 8px rgba(0,0,0,0.05);
 
                     ion-icon {
-                        margin-left: 3px;
+                        margin-left: 0.2em;
                         cursor: pointer;
-                        padding: 3px;
+                        padding: 0.2em;
                         border-radius: 50%;
                         background: rgba(255, 255, 255, 0.5);
 
@@ -390,19 +390,19 @@ export default {
                 }
             }
 
-            .filterMenu {
+            /*.filterMenu {
                 position: relative;
                 .filterBtn {
-                    height: 33px;
-                    width: 198px;
+                    height: 2em;
+                    width: 12.3em;
                     font-size: 0.9em;
-                    padding: 6px 25px;
+                    padding: 0.4em 1.5em;
                     background: $main2light;
                     color: $black;
                     font-weight: 600;
                     border: none;
                     outline: none;
-                    border-radius: 25px;
+                    border-radius: 1.5em;
                     box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2),
                                 0 -2px 8px rgba(0,0,0,0.05);
                     cursor: pointer;
@@ -413,9 +413,9 @@ export default {
                     ion-icon {
                         font-size: 1.1em;
                         text-transform: none;
-                        margin-left: 8px;
+                        margin-left: 0.5em;
                         color: $black;
-                        --ionicon-stroke-width: 55px;
+                        --ionicon-stroke-width: 3.4em;
                         transition: 0.3s;
                     }
 
@@ -440,18 +440,18 @@ export default {
 
                 .filterList {
                     position: absolute;
-                    top: 33px;
+                    top: 2em;
                     left: 0;
                     width: 100%;
                     background: $black;
-                    border-bottom-left-radius: 25px;
-                    border-bottom-right-radius: 25px;
+                    border-bottom-left-radius: 1.5em;
+                    border-bottom-right-radius: 1.5em;
                     overflow: hidden;
                     z-index: 101;
 
                     li {
                         list-style: none;
-                        padding: 5px 20px;
+                        padding: 0.3em 1.25em;
                         cursor: pointer;
                         font-size: 0.9em;
                         font-weight: 600;
@@ -464,29 +464,29 @@ export default {
                     }
                 }
             
-            }
+            }*/
         }
 
         .timeFilter {
             position: relative;
             align-self: flex-end;
-            margin-bottom: 25px;
+            margin-bottom: 1.5em;
 
             @include mobile {
                 align-self: center;
             }
 
             .timeTitle {
-                height: 33px;
-                width: 280px;
+                height: 2em;
+                width: 17.5em;
                 font-size: 0.9em;
-                padding: 6px 15px;
+                padding: 0.4em 0.9em;
                 background: $main2light;
                 color: $black;
                 font-weight: 600;
                 border: none;
                 outline: none;
-                border-radius: 25px;
+                border-radius: 1.5em;
                 box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2),
                             0 -2px 8px rgba(0,0,0,0.05);
                 cursor: pointer;
@@ -496,15 +496,15 @@ export default {
 
                 .choosedTime {
                     font-weight: 700;
-                    margin: 0 5px;
+                    margin: 0 0.3em;
                 }
 
                 ion-icon {
                     font-size: 1.1em;
                     text-transform: none;
-                    margin-left: 8px;
+                    margin-left: 0.5em;
                     color: $black;
-                    --ionicon-stroke-width: 55px;
+                    --ionicon-stroke-width: 3.4em;
                     transition: 0.3s;
                 }
 
@@ -529,18 +529,18 @@ export default {
 
             .times {
                 position: absolute;
-                top: 33px;
+                top: 2em;
                 left: 0;
                 width: 100%;
                 background: $black;
-                border-bottom-left-radius: 25px;
-                border-bottom-right-radius: 25px;
+                border-bottom-left-radius: 1.5em;
+                border-bottom-right-radius: 1.5em;
                 overflow: hidden;
                 z-index: 100;
 
                 .time {
                     list-style: none;
-                    padding: 5px 25px;
+                    padding: 0.3em 1.5em;
                     cursor: pointer;
                     font-size: 0.9em;
                     font-weight: 600;
@@ -557,10 +557,10 @@ export default {
 
         .searchBtn {
             position: relative;
-            max-width: 400px;
+            max-width: 25em;
             width: 100%;
-            padding: 8px 15px;
-            border-radius: 15px;
+            padding: 0.5em 0.9em;
+            border-radius: 0.9em;
             border: none;
             font-size: 1.1em;
             font-weight: 500;
@@ -585,17 +585,17 @@ export default {
     justify-content: flex-start;
     align-items: center;
     flex-direction: column;
-    padding: 50px 80px;
-    padding-top: 10px;
+    padding: 3.1em 5em;
+    padding-top: 0.6em;
 
     @include tablet {
-        padding: 50px 50px;
-        padding-top: 10px;
+        padding: 3.1em 3.1em;
+        padding-top: 0.6em;
     }
 
     @include mobile {
-        padding: 50px 20px;
-        padding-top: 10px;
+        padding: 3.1em 1.25em;
+        padding-top: 0.6em;
     }
 
     .wave {
@@ -605,7 +605,7 @@ export default {
       width: 100%;
       height: 100px;
       background: url(../../public/images/wave3.png);
-      background-size: 1500px 100px;
+      background-size: 100% 100px;
       background-repeat: no-repeat;
       overflow: hidden;
       filter: brightness(0) invert(1);
@@ -619,16 +619,16 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-bottom: 80px;
+    margin-bottom: 5em;
 
     h2 {
         color: $black;
         font-weight: 700;
         font-size: 1.5em;
         align-self: flex-start;
-        margin-bottom: 25px;
+        margin-bottom: 1.5;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.06em;
 
         @include tabletS {
             align-self: center;
@@ -643,13 +643,13 @@ export default {
         position: relative;
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(auto-fill, calc(33% - 50px));
+        grid-template-columns: repeat(auto-fill, calc(33% - 3.1em));
         justify-content: space-between;
-        grid-gap: 50px;
+        grid-gap: 3.1em;
 
         @include tablet {
-            grid-template-columns: repeat(auto-fill, calc(50% - 30px));
-            grid-gap: 30px;
+            grid-template-columns: repeat(auto-fill, calc(50% - 1.9em));
+            grid-gap: 1.9em;
         }
 
         @include tabletS {
@@ -659,7 +659,7 @@ export default {
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            gap: 50px;
+            gap: 3.1em;
         }
 
         .recipeCard {
@@ -691,10 +691,6 @@ export default {
     flex-direction: column;
     padding-bottom: 150px;
 
-    /*@include tabletS {
-        padding-bottom: 50px;
-    }*/
-
     @include tabletS {
         padding-bottom: 290px;
     }
@@ -704,9 +700,9 @@ export default {
         font-weight: 700;
         font-size: 1.5em;
         align-self: flex-start;
-        margin-bottom: 25px;
+        margin-bottom: 1.5em;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.06em;
 
         @include tabletS {
             align-self: center;
@@ -720,28 +716,28 @@ export default {
     .addNewRecipe {
         position: relative;
         width: 100%;
-        padding: 25px 30px;
+        padding: 1.5em 1.9em;
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         text-align: center;
         color: $main1;
-        border: 8px solid $main1;
-        border-radius: 20px;
+        border: 0.5em solid $main1;
+        border-radius: 1.25em;
 
         @include tabletS {
-            padding: 15px 20px;
+            padding: 0.9em 1.25em;
         }
 
         @include mobile {
-            padding: 15px;
-            border: 6px solid $main1;
+            padding: 0.9em;
+            border: 0.4em solid $main1;
         }
 
         h3 {
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 0.6em;
 
             @include tabletS {
                 font-size: 1.1em;
@@ -749,22 +745,22 @@ export default {
         }
 
         p {
-            margin-bottom: 20px;
+            margin-bottom: 1.25em;
         }
 
         .newRecipeBtn {
             font-size: 0.9em;
             position: relative;
-            padding: 6px 25px;
+            padding: 0.4em 1.5em;
             background: $main1;
             color: $black;
             text-transform: uppercase;
             text-decoration: none;
-            letter-spacing: 1px;
+            letter-spacing: 0.06em;
             font-weight: 600;
             border: none;
             outline: none;
-            border-radius: 25px;
+            border-radius: 1.5em;
             cursor: pointer;
 
             &:hover {
@@ -774,7 +770,7 @@ export default {
 
             @include tabletS {
                 font-size: 0.8em;
-                padding: 4px 15px;
+                padding: 0.25em 0.9em;
             }
         }
     }
@@ -783,14 +779,14 @@ export default {
         position: relative;
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(auto-fill, calc(33% - 50px));
+        grid-template-columns: repeat(auto-fill, calc(33% - 3.1em));
         justify-content: space-between;
-        grid-gap: 50px;
-        margin-bottom: 50px;
+        grid-gap: 3.1em;
+        margin-bottom: 3.1em;
 
         @include tablet {
-            grid-template-columns: repeat(auto-fill, calc(50% - 30px));
-            grid-gap: 30px;
+            grid-template-columns: repeat(auto-fill, calc(50% - 1.9em));
+            grid-gap: 1.9em;
         }
 
         @include tabletS {
@@ -800,18 +796,18 @@ export default {
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            gap: 50px;
+            gap: 3.1em;
         }
 
     }
 
     .tovabbiReceptekBtn {
         position: relative;
-        margin: 50px 0 25px 0;
-        max-width: 400px;
+        margin: 3.1em 0 1.5em 0;
+        max-width: 25em;
         width: 100%;
-        padding: 8px 15px;
-        border-radius: 15px;
+        padding: 0.5em 0.9em;
+        border-radius: 0.9em;
         border: none;
         font-size: 1.1em;
         font-weight: 500;
@@ -826,12 +822,12 @@ export default {
         }
 
         @include tabletS {
-            margin: 25px 0;
+            margin: 1.5em 0;
         }
 
         @include mobile {
             font-size: 0.9em;
-            max-width: 350px;
+            max-width: 21.9em;
         }
     }
 }
@@ -839,12 +835,12 @@ export default {
 .recipeCard {
     position: relative;
     width: 100%;
-    height: 280px;
+    height: 17.5em;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    border-radius: 4px;
+    border-radius: 0.25em;
     color: white;
     overflow: hidden;
     cursor: pointer;
@@ -855,13 +851,13 @@ export default {
 
     @include tabletS {
         width: 100%;
-        max-width: 400px;
+        max-width: 25em;
     }
 
     .imgBox {
         position: relative;
         width: 100%;
-        height: 200px;
+        height: 12.5em;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -880,9 +876,9 @@ export default {
     .textBox {
         position: relative;
         width: 100%;
-        height: 80px;
+        height: 5em;
         background: $black;
-        padding: 5px 20px;
+        padding: 0.3em 1.25em;
         display: flex;
         justify-content: center;
         align-items: flex-start;
@@ -913,7 +909,7 @@ export default {
 
                 ion-icon {
                     font-size: 1.2em;
-                    margin-right: 3px;
+                    margin-right: 0.2em;
                 }
             }
 
@@ -927,9 +923,9 @@ export default {
                     font-size: 0.8em;
                     font-weight: 500;
                     background: rgba(255, 255, 255, 0.4);
-                    padding: 3px 8px;
-                    border-radius: 8px;
-                    margin: 1px 2px;
+                    padding: 0.2em 0.5em;
+                    border-radius: 0.5em;
+                    margin: 0.06em 0.12em;
 
                     @include tablet {
                         font-size: 0.7em;

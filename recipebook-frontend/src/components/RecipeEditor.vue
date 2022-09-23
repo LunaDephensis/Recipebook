@@ -124,7 +124,7 @@ export default {
         },
         async getUserTags() {
             let token = localStorage.getItem('token');
-            let resp = await fetch(`http://localhost:3000/tags`, {
+            let resp = await fetch(`${process.env.BACKEND_URL}/tags`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ export default {
         async createNewTag() {
             if(this.newTagInputValue !== '') {
                 let token = localStorage.getItem('token');
-                let resp = await fetch('http://localhost:3000/tags/newtag', {
+                let resp = await fetch(`${process.env.BACKEND_URL}/tags/newtag`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

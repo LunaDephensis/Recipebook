@@ -3,7 +3,7 @@ export function useCreateImage() {
         if(!image) {
             return ''
         }
-        let imgurl = `http://localhost:3000/upload/${image}`
+        let imgurl = `${process.env.BACKEND_URL}/upload/${image}`
         return imgurl
     }
     return { createImageURL }

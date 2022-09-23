@@ -5,7 +5,7 @@ export function useGetTotalRecipesCount() {
 
     onMounted(async () => {
         let token = localStorage.getItem('token');
-            let resp = await fetch(`http://localhost:3000/recipes/totalCount`, {
+            let resp = await fetch(`${process.env.BACKEND_URL}/recipes/totalCount`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

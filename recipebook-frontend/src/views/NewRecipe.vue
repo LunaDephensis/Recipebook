@@ -54,7 +54,7 @@ export default {
             formData.append('recipeImage', this.recipeImage)
             formData.append('recipeId', recipeId)
             console.log(this.recipeImage)
-            await fetch('http://localhost:3000/recipes/uploadimage', {
+            await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
                 method: 'POST',
                 headers: {
                             /*'Content-Type': 'multipart/form-data',*/
@@ -73,7 +73,7 @@ export default {
                 this.newRecipe.ingredientsList.length > 0) {
                     this.$store.commit('startLoading')
                     let token = localStorage.getItem('token');
-                    fetch('http://localhost:3000/recipes/recipe', {
+                    fetch(`${process.env.BACKEND_URL}/recipes/recipe`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

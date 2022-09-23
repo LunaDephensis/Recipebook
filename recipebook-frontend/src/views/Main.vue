@@ -101,7 +101,6 @@ export default {
           padding: 0 1.2em;
         }
         
-
         @include tabletS {
           margin-top: 0;
           width: 100%;

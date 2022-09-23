@@ -81,7 +81,7 @@
             },
             async getRecipe(id) {
                 let token = localStorage.getItem('token');
-                let resp = await fetch(`http://localhost:3000/recipes/singleRecipe?id=${id}`, {
+                let resp = await fetch(`${process.env.BACKEND_URL}/recipes/singleRecipe?id=${id}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -94,7 +94,7 @@
             async deleteRecipe(id) {
                 console.log('frontend');
                 let token = localStorage.getItem('token');
-                let resp = await fetch(`http://localhost:3000/recipes/recipe?id=${id}`, {
+                let resp = await fetch(`${process.env.BACKEND_URL}/recipes/recipe?id=${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
