@@ -1,7 +1,6 @@
 <template>
     <footer>
         <div class="wave"></div>
-        <!--<div class="contentBox">-->
             <ul class="sci">
                 <li><a href="#"><ion-icon name="logo-facebook"></ion-icon></a></li>
                 <li><a href="#"><ion-icon name="logo-twitter"></ion-icon></a></li>
@@ -15,7 +14,6 @@
                     <li><a href="https://ionic.io/"><ion-icon name="logo-ionic"></ion-icon> ionicons</a></li>
                 </ul>
             </div>
-        <!--</div>-->
     </footer>
 </template>
 

@@ -45,7 +45,7 @@ class RecipeRepository {
         }
         searchRecipesQuery += ` WHERE username = $1`;
         if(text) {
-            searchRecipesQuery += ` AND title LIKE '%${text}%'`;
+            searchRecipesQuery += ` AND UPPER(title) LIKE UPPER('%${text}%')`;
         }
         if(time) {
             searchRecipesQuery += ` AND elkeszitesi_ido <= ${time}`;

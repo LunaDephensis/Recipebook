@@ -4,7 +4,7 @@
         <div class="bannerAndSearch" id="bannerAndSearch">
             <div class="searchAndFilter">
                 <div class="searchBox">
-                    <input type="text" class="searchInput" v-model="searchInputText">
+                    <input name="search" type="text" maxlength="50" class="searchInput" v-model="searchInputText">
                     <ion-icon name="search"></ion-icon>
                 </div>
                 <div class="filterBox">
@@ -17,6 +17,7 @@
                         </span>
                     </div>
                     <FilterMenu :actualFilters="actualFilterList"
+                                :disabledFilters="actualChoosedFilters.length === 2"
                                 @selectFilter="filterChoosing($event)"/>
                 </div>
                 <div class="timeFilter">
@@ -149,17 +150,16 @@ export default {
             this.timeListToggle()
         },
         async getRecipes() {
-            let token = localStorage.getItem('token');
-            let recipeURL = this.createRecipesURL();
+            let token = localStorage.getItem('token')
+            let recipeURL = this.createRecipesURL()
             let resp = await fetch(recipeURL, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 }
-            });
-            let recipes = await resp.json();
-            return recipes;
+            })
+            let recipes = await resp.json()
+            return recipes
         },
         async nextPage() {
             this.pageCounter++
@@ -173,53 +173,51 @@ export default {
             let resp = await fetch(`${process.env.BACKEND_URL}/recipes/lastrecipes`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 }
-            });
-            let lastRecipes = await resp.json();
-            return lastRecipes;
+            })
+            let lastRecipes = await resp.json()
+            return lastRecipes
         },
         async getUserTags() {
             let token = localStorage.getItem('token');
             let resp = await fetch(`${process.env.BACKEND_URL}/tags`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 }
             });
-            let tags = await resp.json();
-            return tags;
+            let tags = await resp.json()
+            return tags
         },
         async searchRecipes() {
             this.pageCounter = 0;
-            let res = await this.getRecipes();
+            let res = await this.getRecipes()
             this.actualRecipes = res.recipes
             this.actualRecipesCount = res.count
             this.$router.push({name: 'MyRecipes', hash: `#allRecipes`})
         },
         redirectToRecipePage(id) {
-            this.$router.push({path: `/recipe/${id}`});
+            this.$router.push({path: `/recipe/${id}`})
         },
         createRecipesURL() {
-            let searchURL = `${process.env.BACKEND_URL}/recipes?page=${this.pageCounter}`;
+            let searchURL = `${process.env.BACKEND_URL}/recipes?page=${this.pageCounter}`
             if(this.searchInputText) {
-                searchURL += `&title=${this.searchInputText}`;
+                searchURL += `&title=${this.searchInputText}`
             }
             if(this.choosedTime !== null) {
-                searchURL += `&time=${this.choosedTime}`;
+                searchURL += `&time=${this.choosedTime}`
             }
             let choosedTags = this.filterList.filter((tag) => {
-                return tag.choosed;
+                return tag.choosed
             }).map((choosedTag) => {
-                return choosedTag.id;
+                return choosedTag.id
             });
             if(choosedTags) {
-               let tags = choosedTags.join(',');
-               searchURL += `&tags=${tags}`;
+               let tags = choosedTags.join(',')
+               searchURL += `&tags=${tags}`
             }
-            return searchURL;
+            return searchURL
         }
 
     },
@@ -253,7 +251,7 @@ export default {
         this.filterList = tagsResp.map((tag) => {
             tag.choosed = false
             return tag
-        });
+        })
         this.$store.commit('stopLoading')
     }
 }
@@ -373,6 +371,7 @@ export default {
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    cursor: pointer;
                     box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2),
                                 0 -2px 8px rgba(0,0,0,0.05);
 
@@ -389,82 +388,6 @@ export default {
                     }
                 }
             }
-
-            /*.filterMenu {
-                position: relative;
-                .filterBtn {
-                    height: 2em;
-                    width: 12.3em;
-                    font-size: 0.9em;
-                    padding: 0.4em 1.5em;
-                    background: $main2light;
-                    color: $black;
-                    font-weight: 600;
-                    border: none;
-                    outline: none;
-                    border-radius: 1.5em;
-                    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2),
-                                0 -2px 8px rgba(0,0,0,0.05);
-                    cursor: pointer;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-
-                    ion-icon {
-                        font-size: 1.1em;
-                        text-transform: none;
-                        margin-left: 0.5em;
-                        color: $black;
-                        --ionicon-stroke-width: 3.4em;
-                        transition: 0.3s;
-                    }
-
-                    &:hover {
-                        background: $main2;
-                        color: $white;
-
-                        ion-icon {
-                            color: $white;
-                        }
-                    }
-
-                    &.active {
-                        border-bottom-right-radius: 0;
-                        border-bottom-left-radius: 0;
-
-                        ion-icon {
-                            transform: rotate(-45deg);
-                        }
-                    }
-                }
-
-                .filterList {
-                    position: absolute;
-                    top: 2em;
-                    left: 0;
-                    width: 100%;
-                    background: $black;
-                    border-bottom-left-radius: 1.5em;
-                    border-bottom-right-radius: 1.5em;
-                    overflow: hidden;
-                    z-index: 101;
-
-                    li {
-                        list-style: none;
-                        padding: 0.3em 1.25em;
-                        cursor: pointer;
-                        font-size: 0.9em;
-                        font-weight: 600;
-                        color: $white;
-
-                        &:hover {
-                            background: $main2light;
-                            color: $black;
-                        }
-                    }
-                }
-            
-            }*/
         }
 
         .timeFilter {
@@ -887,6 +810,10 @@ export default {
 
         h3 {
             font-size: 1.1em;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 100%;
 
             @include tablet {
                 font-size: 0.9em;

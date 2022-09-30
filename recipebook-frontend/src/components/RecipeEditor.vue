@@ -3,7 +3,7 @@
                 <div class="titleAndTime">
                     <span class="titleBox">
                         <h3>Recept címe</h3>
-                        <input v-model="recipe.recipeTitle" type="text">
+                        <input v-model="recipe.recipeTitle" type="text" maxlength="80">
                     </span>
                     <span class="timeBox">
                         <h3>Elkészítési idő</h3>
@@ -30,7 +30,7 @@
                             <p>Címke létrehozásához írd a mezőbe a címke nevét majd kattints a plusz gombra. Ezután már kiválaszthatod a fenti listából.</p>
                         </div>
                         <div class="inputBox">
-                            <input type="text" v-model="newTagInputValue" placeholder="Új címke neve...">
+                            <input type="text" v-model="newTagInputValue" placeholder="Új címke neve..." maxlength="10">
                             <ion-icon @click="createNewTag()" name="add-circle"></ion-icon>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                     <h3>Hozzávalók</h3>
                     <p>Adj meg új hozzávalót majd kattints a plusz gombra vagy nyomj Enter-t.</p>
                     <div class="inputBox">
-                        <input type="text" placeholder="Új hozzávaló..."
+                        <input type="text" placeholder="Új hozzávaló..." maxlength="80"
                         v-model="newIngredientInputValue"
                         @keyup.enter="addIngredient()">
                         <ion-icon @click="addIngredient()" name="add-circle"></ion-icon>
@@ -59,7 +59,7 @@
                 <div class="addElkeszites">
                     <h3>Elkészítési mód</h3>
                     <textarea v-model="recipe.elkeszites"
-                        placeholder="Ide írd az elkészítési módot. Az új bekedésekhez nyomj Enter-t.">
+                        placeholder="Ide írd az elkészítési módot. Az új bekedésekhez nyomj Enter-t." maxlength="4000">
                     </textarea>
                 </div>
             </div>
@@ -127,7 +127,6 @@ export default {
             let resp = await fetch(`${process.env.BACKEND_URL}/tags`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 }
             });
@@ -149,7 +148,6 @@ export default {
                 let resp = await fetch(`${process.env.BACKEND_URL}/tags/newtag`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + token
                     },
                     body: JSON.stringify({tagname: this.newTagInputValue})

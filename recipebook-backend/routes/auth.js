@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const userRepo = require('../model/user.repository');
+const tagRepo = require('../model/tag.repository');
 
 router.post('/login', async (req, res) => {
     let user = await userRepo.getUser(req.body.username);
@@ -17,6 +18,10 @@ router.post('/signup', async (req, res) => {
     let existUserCount = await userRepo.existUser(req.body.username, req.body.email);
     if(!existUserCount) {
         await userRepo.signUpUser(req.body.username, req.body.password, req.body.email);
+        let basicTags = ['leves', 'főétel', 'desszert', 'ital'];
+        basicTags.forEach( async (tag) => {
+            await tagRepo.createNewTag(req.body.username, tag);
+        });
         sendToken(req, res);
     }
     else {
