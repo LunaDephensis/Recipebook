@@ -139,22 +139,22 @@
             justify-content: flex-start;
             align-items: center;
             flex-direction: column;
-            padding: 90px 80px;
+            padding: 5.6em 5em;
             padding-bottom: 250px;
             background: $white;
 
             @include tablet {
-                padding: 90px 30px;
+                padding: 5.6em 1.9em;
                 padding-bottom: 250px;
             }
 
             @include tabletS {
-                padding: 90px 25px;
+                padding: 5.6em 1.5em;
                 padding-bottom: 345px;
             }
 
             @include mobile {
-                padding: 90px 20px;
+                padding: 5.6em 1.25em;
                 padding-bottom: 345px;
             }
         }
@@ -165,7 +165,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 1.25em;
 
             @include mobile {
                 align-items: flex-start;
@@ -175,6 +175,7 @@
                 font-size: 2.5em;
                 font-weight: 600;
                 color: $black;
+                word-break: break-all;
                 flex-wrap: wrap;
 
                 @include tablet {
@@ -182,7 +183,7 @@
                 }
 
                 @include tabletS {
-                    margin-bottom: 5px;
+                    margin-bottom: 0.3em;
                 }
 
                 @include mobile {
@@ -204,14 +205,14 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    padding: 8px;
+                    padding: 0.5em;
                     border: none;
                     outline: none;
                     border-radius: 50%;
                     background: rgba(0,0,0,0.7);
                     color: $main1;
                     cursor: pointer;
-                    margin-left: 15px;
+                    margin-left: 0.9em;
                     opacity: 0.9;
                     z-index: 100;
 
@@ -220,12 +221,12 @@
                     }
 
                     @include mobile {
-                        margin-left: 10px;
+                        margin-left: 0.6em;
                     }
 
                     &:nth-child(1) {
                         @include mobile {
-                            margin-bottom: 10px;
+                            margin-bottom: 0.6em;
                         }
                     }
 
@@ -244,16 +245,16 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 1.25em;
 
             .time {
                 font-size: 1em;
                 font-weight: 500;
                 color: $black;
                 background: $main2light;
-                padding: 3px 8px;
-                border-radius: 8px;
-                margin-right: 10px;
+                padding: 0.2em 0.5em;
+                border-radius: 0.5em;
+                margin-right: 0.6em;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -263,8 +264,8 @@
                 }
 
                 ion-icon {
-                    margin-right: 4px;
-                    margin-bottom: 2px;
+                    margin-right: 0.25em;
+                    margin-bottom: 0.12em;
                     --ionicon-stroke-width: 55px;
                 }
             }
@@ -280,9 +281,9 @@
                     font-weight: 500;
                     color: $black;
                     background: $main1light;
-                    padding: 3px 8px;
-                    border-radius: 8px;
-                    margin-right: 5px;
+                    padding: 0.2em 0.5em;
+                    border-radius: 0.5em;
+                    margin-right: 0.3em;
 
                     @include mobile {
                         font-size: 0.9em;
@@ -297,10 +298,10 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: auto auto;
-            column-gap: 30px;
+            column-gap: 1.9em;
 
             @include tablet {
-                column-gap: 25px;
+                column-gap: 1.5em;
             }
 
             @include tabletS {
@@ -315,16 +316,28 @@
                 position: relative;
                 grid-column: 1/3;
                 grid-row: 1/2;
+                min-width: 500px;
                 width: 100%;
                 max-width: 700px;
+                min-height: 360px;
                 height: 100%;
                 max-height: 460px;
-                margin-bottom: 25px;
+                margin-bottom: 1.5em;
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                border-radius: 8px;
+                border-radius: 0.5em;
                 overflow: hidden;
+
+                @include tablet {
+                    min-width: 250px;
+                    min-height: 180px;
+                }
+
+                @include tabletS {
+                    min-width: 100%;
+                    min-height: 100%;
+                }
 
                 img {
                     position: relative;
@@ -342,15 +355,15 @@
                 background: $main1;
                 width: 100%;
                 max-width: 100%;
-                padding: 10px 30px 30px;
-                margin-top: 40px;
-                border-bottom-right-radius: 6px;
-                border-bottom-left-radius: 6px;
+                padding: 0.6em 1.9em 1.9em;
+                margin-top: 2.5em;
+                border-bottom-right-radius: 0.4em;
+                border-bottom-left-radius: 0.4em;
 
                 @include tabletS {
                     background: $white;
                     margin-top: 0;
-                    padding: 0 0 25px;
+                    padding: 0 0 1.5em;
                 }
 
                 .wave {
@@ -360,7 +373,7 @@
                     width: 100%;
                     height: 50px;
                     background: url(../../public/images/wave3.png);
-                    background-size: 750px 50px;
+                    background-size: 180% 50px;
                     background-repeat: no-repeat;
                     overflow: hidden;
 
@@ -373,8 +386,8 @@
                     color: $black;
                     font-size: 1.8em;
                     font-weight: 600;
-                    letter-spacing: 1px;
-                    margin-bottom: 20px;
+                    letter-spacing: 0.06em;
+                    margin-bottom: 1.25em;
 
                     @include tablet {
                         font-size: 1.6em;
@@ -400,7 +413,7 @@
                     flex-direction: column;
 
                     @include tabletS {
-                        padding-left: 35px;
+                        padding-left: 2.2em;
                     }
 
                     li {
@@ -408,7 +421,7 @@
                         list-style: none;
                         color: $black;
                         width: 100%;
-                        padding: 5px 0;
+                        padding: 0.3em 0;
                         font-weight: 500;
                         margin-left: 1em;
 
@@ -440,8 +453,7 @@
                 position: relative;
                 grid-column: 1/3;
                 grid-row: 2/3;
-                max-width: 700px;
-                padding: 20px 0;
+                padding: 1.25em 0;
                 display: flex;
                 justify-content: center;
                 align-items: flex-start;
@@ -451,8 +463,8 @@
                     color: $black;
                     font-size: 1.8em;
                     font-weight: 600;
-                    letter-spacing: 1px;
-                    margin-bottom: 20px;
+                    letter-spacing: 0.06em;
+                    margin-bottom: 1.25em;
 
                     @include tablet {
                         font-size: 1.6em;
@@ -471,7 +483,7 @@
 
                 p {
                     color: $black;
-                    margin-bottom: 12px;
+                    margin-bottom: 0.75em;
                 }
             }
         }
@@ -491,32 +503,32 @@
 
         .popUp {
             position: relative;
-            width: 600px;
-            min-height: 250px;
+            width: 37.5em;
+            min-height: 15.6em;
             height: auto;
             background: $white;
-            border-radius: 18px;
+            border-radius: 1.1em;
             display: flex;
             justify-content: flex-start;
             align-items: center;
             flex-direction: column;
-            padding: 25px 20px;
+            padding: 1.5em 1.25em;
 
             @include tabletS {
                 max-width: 100%;
-                margin: 0 20px;
+                margin: 0 1.25em;
             }
 
             ion-icon {
                 font-size: 2.5em;
                 color: $errorMessage;
-                margin-bottom: 10px;
+                margin-bottom: 0.6em;
             }
 
             h2 {
                 color: $errorMessage;
                 font-weight: 600;
-                margin-bottom: 15px;
+                margin-bottom: 0.9em;
                 text-align: center;
 
                 @include mobile {
@@ -541,7 +553,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                margin: 20px 0;
+                margin: 1.25em 0;
 
                 @include mobile {
                     flex-direction: column;
@@ -551,10 +563,10 @@
             .popUpBtn {
                 font-size: 1.6em;
                 font-weight: 600;
-                letter-spacing: 2px;
-                padding: 8px 25px;
+                letter-spacing: 0.12em;
+                padding: 0.5em 1.5em;
                 border: none;
-                border-radius: 10px;
+                border-radius: 0.6em;
                 background: $main1;
                 color: $black;
                 cursor: pointer;
@@ -569,13 +581,13 @@
                 }
 
                 &.deleteBtn {
-                    margin-right: 20px;
+                    margin-right: 1.25em;
                     color: $main1;
                     background: $black;
 
                     @include mobile {
                         margin-right: 0;
-                        margin-bottom: 20px;
+                        margin-bottom: 1.25em;
                     }
 
                     &:hover {

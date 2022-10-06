@@ -57,7 +57,6 @@ export default {
             await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
                 method: 'POST',
                 headers: {
-                            /*'Content-Type': 'multipart/form-data',*/
                             'Authorization': 'Bearer ' + token,
                             'Accept': 'application/json'
                         },
@@ -85,10 +84,6 @@ export default {
                         })
                     }).then((resp) => {
                         return resp.json()
-                        /*this.$store.commit('stopLoading')
-                        if(resp.ok) {
-                            this.$router.push({path: '/myrecipes'});
-                        }*/
                     }).then( async (recipeData) => {
                         await this.uploadImage(recipeData.recipeId)
                         this.$store.commit('stopLoading')

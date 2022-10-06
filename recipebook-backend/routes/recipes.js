@@ -12,10 +12,7 @@ router.get('/', authService.verifyToken, async (req, res, next) => {
         page = req.query.page;
     }
     if(req.query.title || req.query.time || req.query.tags) {
-        let tags = req.query.tags;
-        if(tags) {
-            tags = tags.split(',');
-        }
+        let tags = req.query.tags?.split(',');
         let recipes = await recipeRepo.searchRecipes(req.username, page, req.query.title, req.query.time, tags);
         let count = await recipeRepo.selectedRecipesCount(req.username, req.query.title, req.query.time, tags);
         res.json({

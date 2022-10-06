@@ -398,6 +398,7 @@ export default {
                 grid-column: 1/3;
                 grid-row: 3/4;
                 margin-bottom: 25px;
+                width: 100%;
 
                 @include tablet {
                     position: relative;
@@ -416,11 +417,19 @@ export default {
                     font-weight: 600;
                     color: $black;
                     margin-bottom: 5px;
+                    color: $white;
 
                     @include tablet {
                         margin-bottom: 10px;
                         color: $white;
                     }
+                }
+
+                input {
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    width: 100%;
                 }
 
                 input {
@@ -579,6 +588,7 @@ export default {
                         display: flex;
                         justify-content: flex-start;
                         align-items: center;
+                        word-break: break-all;
 
                         @include tablet {
                             font-size: 1.1em;
@@ -599,6 +609,7 @@ export default {
                         }
 
                         ion-icon {
+                            min-width: 1.3em;
                             font-size: 1.3em;
                             margin-left: 5px;
                             color: $black;

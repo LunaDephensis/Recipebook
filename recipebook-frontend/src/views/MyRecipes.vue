@@ -213,7 +213,7 @@ export default {
             }).map((choosedTag) => {
                 return choosedTag.id
             });
-            if(choosedTags) {
+            if(choosedTags.length) {
                let tags = choosedTags.join(',')
                searchURL += `&tags=${tags}`
             }
@@ -401,8 +401,8 @@ export default {
 
             .timeTitle {
                 height: 2em;
-                width: 17.5em;
-                font-size: 0.9em;
+                min-width: 18.5em;
+                font-size: 1em;
                 padding: 0.4em 0.9em;
                 background: $main2light;
                 color: $black;

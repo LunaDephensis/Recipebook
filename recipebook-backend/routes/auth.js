@@ -3,10 +3,11 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const userRepo = require('../model/user.repository');
 const tagRepo = require('../model/tag.repository');
+const AuthService = require('../services/auth.services');
 
 router.post('/login', async (req, res) => {
     let user = await userRepo.getUser(req.body.username);
-    if(user  && req.body.password === user.password) {
+    if(user && req.body.password === user.password) {
         sendToken(req, res);
     }
     else {
@@ -15,8 +16,8 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/signup', async (req, res) => {
-    let existUserCount = await userRepo.existUser(req.body.username, req.body.email);
-    if(!existUserCount) {
+    let existUser = await userRepo.existUser(req.body.username, req.body.email);
+    if(!existUser) {
         await userRepo.signUpUser(req.body.username, req.body.password, req.body.email);
         let basicTags = ['leves', 'főétel', 'desszert', 'ital'];
         basicTags.forEach( async (tag) => {
@@ -30,7 +31,7 @@ router.post('/signup', async (req, res) => {
 });
 
 function sendToken(req, res) {
-    const token = jwt.sign({username: req.body.username}, process.env.SECRET_KEY);
+    const token = AuthService.signToken(req.body.username);
     res.json(token);
 }
 

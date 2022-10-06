@@ -3,7 +3,6 @@
             <router-link to="/myrecipes"><h3 class="logo">Recipe Book</h3></router-link>
             <ul class="desktopMenu">
                 <li><router-link to="/newrecipe" class="newRecipeBtn"><ion-icon name="add-outline"></ion-icon> Új Recept</router-link></li>
-                <li><a href="#" class="profileBtn"><ion-icon name="person"></ion-icon></a></li>
                 <li><a href="#" class="logoutBtn" @click="logout()">Kilépés</a></li>
             </ul>
             <div class="mobileMenuBtn" @click="mobileMenuToggle()">
@@ -15,7 +14,6 @@
                 <li @click="scrollTo('bannerAndSearch')"><a><ion-icon name="search"></ion-icon> Receptek keresése</a></li>
                 <li @click="scrollTo('lastRecipes')" v-if="recipesCount > 3"><a><ion-icon name="timer-outline"></ion-icon> Legutóbbi receptjeid</a></li>
                 <li @click="scrollTo('allRecipes')"><a ><ion-icon name="fast-food-outline"></ion-icon> Összes recepted</a></li>
-                <li><a href="#"><ion-icon name="person"></ion-icon> Profil</a></li>
                 <li><a href="#" @click="logout()"><ion-icon name="log-out-outline"></ion-icon> Kilépés</a></li>
             </ul>
         </nav>
@@ -185,40 +183,6 @@ nav {
                        color: $main1;
                        opacity: 0.9;
                    }
-
-                   /*@include tabletS {
-                        font-size: 0.8em;
-                        padding: 4px 15px;
-                   }*/
-
-                }
-
-                &.profileBtn {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    padding: 8px;
-                    border-radius: 50%;
-
-                    &:hover {
-                       background: rgba(0,0,0,0.7);
-                       color: $main1;
-
-                       @include tablet {
-                           opacity: 1;
-                       }
-                   }
-
-                   @include tablet {
-                       background: rgba(0,0,0,0.7);
-                       color: $main1;
-                       opacity: 0.9;
-                   }
-
-                   /*@include tabletS {
-                        font-size: 0.9em;
-                        padding: 6px;
-                   }*/
                 }
             }
         }

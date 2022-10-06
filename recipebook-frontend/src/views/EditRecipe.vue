@@ -75,7 +75,6 @@ export default {
             let resp = await fetch(`${process.env.BACKEND_URL}/recipes/singleRecipe?id=${id}`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + token
                 }
             });
@@ -90,7 +89,6 @@ export default {
             let formData = new FormData()
             formData.append('recipeImage', this.recipeImage)
             formData.append('recipeId', recipeId)
-            console.log(this.recipeImage)
             await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
                 method: 'POST',
                 headers: {
@@ -111,7 +109,6 @@ export default {
                 this.actualRecipe.recipeTime &&
                 this.actualRecipe.elkeszites &&
                 this.actualRecipe.ingredientsList.length > 0) {
-                    console.log('lefutott')
                     this.$store.commit('startLoading')
                     let token = localStorage.getItem('token');
                     fetch(`${process.env.BACKEND_URL}/recipes/recipe`, {
@@ -156,10 +153,6 @@ export default {
         })
         this.isLoaded = true
         this.$store.commit('stopLoading')
-        /*this.tags = recipeResp.tags
-        this.elkeszitesBekezdesek = this.recipe.elkeszitesi_mod.split('\n').map((bekezdes) => {
-            return bekezdes.trim()
-        })*/
     }
 }
 </script>

@@ -21,6 +21,10 @@ class AuthService {
           res.sendStatus(403);
         }
     }
+
+    signToken(username) {
+      return jwt.sign({username: username}, process.env.SECRET_KEY);
+    }
 }
 
 

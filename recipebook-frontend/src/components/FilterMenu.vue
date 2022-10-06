@@ -43,10 +43,10 @@ export default {
         position: relative;
         width: 13.5em;
         .filterBtn {
-            height: 33px;
+            height: 2em;
             width: 100%;
             min-width: 13.5em;
-            font-size: 0.9em;
+            font-size: 1em;
             padding: 0.4em 1.5em;
             background: $main2light;
             color: $black;
@@ -61,13 +61,13 @@ export default {
             justify-content: center;
             align-items: center;
 
-            @include tablet {
+            /*@include tablet {
                 height: 40px;
             }
 
             @include mobile {
                 height: 33px;
-            }
+            }*/
 
             &.disabled {
                 background: $disabledMenu;
@@ -114,7 +114,7 @@ export default {
 
         .filterList {
             position: absolute;
-            top: 33px;
+            top: 2em;
             left: 0;
             width: 100%;
             background: $black;
