@@ -1,3 +1,4 @@
+const pgp = require('pg-promise');
 const pool = require('./pool');
 const tagRepo = require('./tag.repository');
 
@@ -88,15 +89,26 @@ class RecipeRepository {
         return result;
     }
     async deleteSingleRecipe(recipeId) {
+        let deleteSingleRecipeKapcsolatQuery = `delete from recipebook_recipe_tag_kapcsolat where recipe_id = $1;`;
         let deleteSingleRecipeQuery = `DELETE FROM recipebook_recipes WHERE id = $1;`;
-        await pool.query(deleteSingleRecipeQuery, [recipeId]);
+        await pool.tx(async (t) => {
+            await t.query(deleteSingleRecipeKapcsolatQuery, [recipeId]);
+            await t.query(deleteSingleRecipeQuery, [recipeId]);
+        });
     }
-    async saveRecipe(username, newRecipe) {
+    async saveRecipe(username, newRecipe, tagIds) {
         let ingredients = newRecipe.ingredientsList.join(',');
         let saveRecipeQuery = `INSERT INTO recipebook_recipes(id, title, user_id, elkeszitesi_ido, letrehozas_datuma, hozzavalok, elkeszitesi_mod)
         VALUES(nextval('s_recipebook_recipes'), $1, (select id from recipebook_user
         WHERE username = $2), $3, current_timestamp, $4, $5) returning id;`;
-        let result = await pool.one(saveRecipeQuery, [newRecipe.recipeTitle, username, newRecipe.recipeTime, ingredients, newRecipe.elkeszites]);
+        let saveNewKapcsolatQuery = new pgp.QueryFile('../model/queries/insertKapcsolat.sql');
+        let result;
+        await pool.tx(async (t) => {
+            result = await t.one(saveRecipeQuery, [newRecipe.recipeTitle, username, newRecipe.recipeTime, ingredients, newRecipe.elkeszites]);
+            tagIds.forEach( async (tagId) => {
+                await t.query(saveNewKapcsolatQuery, [result.id, tagId]);
+            });
+        });
         return result.id;
     }
 

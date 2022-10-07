@@ -53,23 +53,25 @@ router.get('/singleRecipe', authService.verifyToken, async (req, res, next) => {
 });
 
 router.post('/recipe', authService.verifyToken, async (req, res, next) => {
-    let newRecipeId;
-    pool.tx(async () => {
-        newRecipeId = await recipeRepo.saveRecipe(req.username, req.body.newRecipe);
-        await kapcsolatRepo.saveAllNewKapcsolat(newRecipeId, req.body.newRecipeTags);
-
-    }).then(() => {
+    try {
+        let newRecipeId = await recipeRepo.saveRecipe(req.username, req.body.newRecipe, req.body.newRecipeTags);
         res.json({recipeId: newRecipeId});
-    });
+    }
+    catch(ex) {
+        res.sendStatus(500);
+    }
+    
 });
 
 router.delete('/recipe', authService.verifyToken, async (req, res, next) => {
-    pool.tx(async () => {
-        await kapcsolatRepo.deleteSingleRecipeKapcsolat(req.query.id);
+    try {
         await recipeRepo.deleteSingleRecipe(req.query.id);
-    }).then(() => {
         res.sendStatus(200);
-    });
+    }
+    catch(ex) {
+        console.error(ex.message)
+        res.sendStatus(500);
+    }
 });
 
 router.put('/recipe', authService.verifyToken, async (req, res, next) => {
