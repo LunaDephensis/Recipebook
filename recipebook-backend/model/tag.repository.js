@@ -16,9 +16,7 @@ class TagRepository {
         return result;
     }
     async createNewTag(username, title) {
-        const createNewTagQuery = `insert into recipebook_tags(id, title, user_id)
-        values(nextval('s_recipebook_tags'), $1, (select id from recipebook_user
-        where username = $2));`;
+        const createNewTagQuery = new pgp.QueryFile('../model/queries/insertNewTag.sql');
         let result = await pool.query(createNewTagQuery, [title, username]);
     }
 }

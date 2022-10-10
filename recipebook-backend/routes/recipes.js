@@ -60,7 +60,6 @@ router.post('/recipe', authService.verifyToken, async (req, res, next) => {
     catch(ex) {
         res.sendStatus(500);
     }
-    
 });
 
 router.delete('/recipe', authService.verifyToken, async (req, res, next) => {
@@ -75,26 +74,14 @@ router.delete('/recipe', authService.verifyToken, async (req, res, next) => {
 });
 
 router.put('/recipe', authService.verifyToken, async (req, res, next) => {
-    pool.tx( async () => {
-        await recipeRepo.updateRecipe(req.body.recipe);
-        let oldTags = await recipeRepo.getSingleRecipeTags(req.body.recipe.recipeId);
-        let oldTagIds = oldTags.map((oldTag) => {
-            return oldTag.tag_id;
-        });
-        let newTagIds = [];
-        req.body.tags.forEach((tagId) => {
-            if(!oldTagIds.includes(tagId)) {
-                newTagIds.push(tagId);
-            }
-        });
-        await kapcsolatRepo.saveAllNewKapcsolat(req.body.recipe.recipeId, newTagIds);
-        oldTagIds = oldTagIds.filter((oldTagId) => {
-            return !req.body.tags.includes(oldTagId);
-        });
-        await kapcsolatRepo.deleteOldTags(req.body.recipe.recipeId, oldTagIds);
-    }).then(() => {
+    try {
+        await recipeRepo.updateRecipe(req.body.recipe, req.body.tags);
         res.sendStatus(200);
-    });
+    }
+    catch(ex) {
+        console.error(ex.message)
+        res.sendStatus(500);
+    }
 });
 
 router.post('/uploadimage', [authService.verifyToken, upload.single('recipeImage')], async (req, res, next) => {

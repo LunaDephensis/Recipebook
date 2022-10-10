@@ -118,16 +118,40 @@ class RecipeRepository {
         await pool.query(addRecipeImageQuery, [recipeId, recipeImage]);
     }
 
-    async updateRecipe(recipe) {
+    async updateRecipe(recipe, tags) {
         let ingredients = recipe.ingredientsList.join(',');
+        let oldTags = await this.getSingleRecipeTags(recipe.recipeId);
+        let oldTagIds = oldTags.map((oldTag) => {
+            return oldTag.tag_id;
+        });
+        let newTagIds = [];
+        tags.forEach((tagId) => {
+            if(!oldTagIds.includes(tagId)) {
+                newTagIds.push(tagId);
+            }
+        });
+        let needlessOldTagIds = oldTagIds.filter((oldTagId) => {
+            return !tags.includes(oldTagId);
+        });
         let updateRecipeQuery = `UPDATE recipebook_recipes
         SET title = $1, elkeszitesi_ido = $2, hozzavalok = $3, elkeszitesi_mod = $4
         WHERE id = $5`;
-        await pool.query(updateRecipeQuery, [recipe.recipeTitle,
-                                            recipe.recipeTime,
-                                            ingredients,
-                                            recipe.elkeszites,
-                                            recipe.recipeId]);
+        let saveNewKapcsolatQuery = new pgp.QueryFile('../model/queries/insertKapcsolat.sql');
+        let deleteOldTagQuery = `delete from recipebook_recipe_tag_kapcsolat where recipe_id = $1 and tag_id = $2;`;
+
+        await pool.tx(async (t) => {
+            await t.query(updateRecipeQuery, [recipe.recipeTitle,
+                                                recipe.recipeTime,
+                                                ingredients,
+                                                recipe.elkeszites,
+                                                recipe.recipeId]);
+            newTagIds.forEach( async (tagId) => {
+                await t.query(saveNewKapcsolatQuery, [recipe.recipeId, tagId]);
+            });
+            needlessOldTagIds.forEach( async (tagId) => {
+                await pool.query(deleteOldTagQuery, [recipe.recipeId, tagId]);
+            });
+        });
     }
 
 }

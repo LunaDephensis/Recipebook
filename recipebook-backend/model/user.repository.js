@@ -1,3 +1,4 @@
+const pgp = require('pg-promise');
 const pool = require('./pool');
 
 class UserRepository {
@@ -11,8 +12,15 @@ class UserRepository {
         return result[0].count > 0;
     }
     async signUpUser(username, password, email) {
-        await pool.query(`insert into recipebook_user(id, username, password, email)
-        values(nextval('s_recipebook_user'), $1, $2, $3)`, [username, password, email]);
+        let basicTags = ['leves', 'főétel', 'desszert', 'ital'];
+        const createNewTagQuery = new pgp.QueryFile('../model/queries/insertNewTag.sql');
+        await pool.tx(async (t) => {
+            await t.query(`insert into recipebook_user(id, username, password, email)
+                values(nextval('s_recipebook_user'), $1, $2, $3)`, [username, password, email]);
+            basicTags.forEach( async (tag) => {
+                await t.query(createNewTagQuery, [tag, username]);
+            });
+        });
     }
 }
 

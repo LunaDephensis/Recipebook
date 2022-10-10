@@ -18,12 +18,13 @@ router.post('/login', async (req, res) => {
 router.post('/signup', async (req, res) => {
     let existUser = await userRepo.existUser(req.body.username, req.body.email);
     if(!existUser) {
-        await userRepo.signUpUser(req.body.username, req.body.password, req.body.email);
-        let basicTags = ['leves', 'főétel', 'desszert', 'ital'];
-        basicTags.forEach( async (tag) => {
-            await tagRepo.createNewTag(req.body.username, tag);
-        });
-        sendToken(req, res);
+        try {
+            await userRepo.signUpUser(req.body.username, req.body.password, req.body.email);
+            sendToken(req, res);
+        }
+        catch(ex) {
+            res.sendStatus(500);
+        }
     }
     else {
         res.sendStatus(403);
