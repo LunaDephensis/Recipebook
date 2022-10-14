@@ -187,7 +187,7 @@ export default {
 
             @include tabletS {
                 padding: 90px 25px;
-                padding-bottom: 345px;
+                padding-bottom: 400px;
             }
 
             @include mobile {

@@ -38,6 +38,11 @@ const routes = [
       requiresAuth: true
     },
     component: () => import('../views/EditRecipe.vue')
+  },
+  {
+    path: '/error',
+    name: 'ErrorPage',
+    component: () => import('../views/ErrorPage.vue')
   }
 ]
 

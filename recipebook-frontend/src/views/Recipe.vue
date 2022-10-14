@@ -354,6 +354,7 @@
                 align-self: start;
                 background: $main1;
                 width: 100%;
+                max-height: 48.4em;
                 max-width: 100%;
                 padding: 0.6em 1.9em 1.9em;
                 margin-top: 2.5em;
@@ -364,6 +365,7 @@
                     background: $white;
                     margin-top: 0;
                     padding: 0 0 1.5em;
+                    max-height: none;
                 }
 
                 .wave {
@@ -411,9 +413,14 @@
                     justify-content: center;
                     align-items: flex-start;
                     flex-direction: column;
+                    max-height: 35.9em;
+                    overflow-y: auto;
+                    overflow-x: hidden;
 
                     @include tabletS {
                         padding-left: 2.2em;
+                        max-height: none;
+                        overflow: visible;
                     }
 
                     li {

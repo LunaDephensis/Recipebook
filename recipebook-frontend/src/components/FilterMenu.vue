@@ -61,14 +61,6 @@ export default {
             justify-content: center;
             align-items: center;
 
-            /*@include tablet {
-                height: 40px;
-            }
-
-            @include mobile {
-                height: 33px;
-            }*/
-
             &.disabled {
                 background: $disabledMenu;
                 color: $white;

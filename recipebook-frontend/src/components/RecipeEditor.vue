@@ -45,6 +45,7 @@
                     <p>Adj meg új hozzávalót majd kattints a plusz gombra vagy nyomj Enter-t.</p>
                     <div class="inputBox">
                         <input type="text" placeholder="Új hozzávaló..." maxlength="80"
+                        :disabled="recipe.ingredientsList.length === 40"
                         v-model="newIngredientInputValue"
                         @keyup.enter="addIngredient()">
                         <ion-icon @click="addIngredient()" name="add-circle"></ion-icon>
@@ -205,7 +206,7 @@ export default {
             width: 100%;
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            grid-template-rows: auto auto auto auto;
+            grid-template-rows: 14em auto 5.5em auto;
             column-gap: 30px;
             margin-bottom: 30px;
 
@@ -476,6 +477,7 @@ export default {
                 background: $main1;
                 width: 100%;
                 max-width: 100%;
+                max-height: 48.4em;
                 padding: 10px 30px 30px;
                 margin-top: 40px;
                 border-bottom-right-radius: 6px;
@@ -487,6 +489,7 @@ export default {
                     padding: 30px;
                     margin-top: 0;
                     margin-bottom: 35px;
+                    max-height: none;
                 }
 
                 @include mobile {
@@ -550,6 +553,10 @@ export default {
                         @include tablet {
                             width: 100%;
                         }
+
+                        &:disabled {
+                            opacity: 0.5;
+                        }
                     }
 
                     ion-icon {
@@ -564,10 +571,18 @@ export default {
                     position: relative;
                     width: 100%;
                     display: flex;
-                    justify-content: center;
+                    justify-content: flex-start;
                     align-items: flex-start;
                     flex-direction: column;
                     padding-left: 20px;
+                    max-height: 35.9em;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+
+                    @include tablet {
+                        max-height: none;
+                        overflow: visible;
+                    }
 
                     @include tabletS {
                         padding-left: 20px;
@@ -591,7 +606,7 @@ export default {
                         word-break: break-all;
 
                         @include tablet {
-                            font-size: 1.1em;
+                            font-size: 0.8em;
                         }
 
                         @include mobile {
