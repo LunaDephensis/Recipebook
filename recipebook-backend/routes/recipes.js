@@ -28,7 +28,6 @@ router.get('/', authService.verifyToken, async (req, res, next) => {
             count: count
         });
     }
-    
 });
 
 router.get('/lastrecipes', authService.verifyToken, async (req, res, next) => {
@@ -93,7 +92,6 @@ router.post('/uploadimage', [authService.verifyToken, upload.single('recipeImage
     else {
         res.sendStatus(404);
     }
-    console.log(req.file.filename);
 });
 
 module.exports = router;

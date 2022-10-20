@@ -88,11 +88,15 @@
                         'Authorization': 'Bearer ' + token
                     }
                 });
-                let recipeResp = await resp.json();
-                return recipeResp;
+                if(resp.ok) {
+                    let recipeResp = await resp.json();
+                    return recipeResp;
+                }
+                else {
+                    throw new Error('Hiba a recept betöltése során.');
+                }                
             },
             async deleteRecipe(id) {
-                console.log('frontend');
                 let token = localStorage.getItem('token');
                 let resp = await fetch(`${process.env.BACKEND_URL}/recipes/recipe?id=${id}`, {
                     method: 'DELETE',
@@ -104,17 +108,25 @@
                 if(resp.ok) {
                     this.$router.push({path: `/myrecipes`});
                 }
+                else {
+                    this.$router.push({path: `/error`});
+                }
             }
         },
         async created() {
             this.$store.commit('startLoading')
-            let recipeResp = await this.getRecipe(this.$route.params.id);
-            this.recipe = recipeResp.recipe
-            this.tags = recipeResp.tags
-            this.ingredients = this.recipe.hozzavalok.split(',')
-            this.elkeszitesBekezdesek = this.recipe.elkeszitesi_mod.split('\n').map((bekezdes) => {
-                return bekezdes.trim()
-            })
+            try {
+                let recipeResp = await this.getRecipe(this.$route.params.id);
+                this.recipe = recipeResp.recipe
+                this.tags = recipeResp.tags
+                this.ingredients = this.recipe.hozzavalok.split(',')
+                this.elkeszitesBekezdesek = this.recipe.elkeszitesi_mod.split('\n').map((bekezdes) => {
+                    return bekezdes.trim()
+                })
+            }
+            catch(ex) {
+                this.$router.push({path: '/error'});
+            }
             this.$store.commit('stopLoading')
         }
     }

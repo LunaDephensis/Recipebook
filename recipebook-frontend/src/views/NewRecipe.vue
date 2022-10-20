@@ -50,29 +50,31 @@ export default {
         },
         async uploadImage(recipeId) {
             let token = localStorage.getItem('token');
-            let formData = new FormData()
-            formData.append('recipeImage', this.recipeImage)
-            formData.append('recipeId', recipeId)
-            console.log(this.recipeImage)
-            await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
+            let formData = new FormData();
+            formData.append('recipeImage', this.recipeImage);
+            formData.append('recipeId', recipeId);
+            let resp = await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
                 method: 'POST',
                 headers: {
                             'Authorization': 'Bearer ' + token,
                             'Accept': 'application/json'
                         },
                 body: formData
-            })
+            });
+            if(!resp.ok) {
+                throw new Error('Hiba a kép feltöltésekor.');
+            }
 
         },
-        saveNewRecipe() {
+        async saveNewRecipe() {
             if(this.newRecipe.recipeTitle &&
                 this.newRecipe.recipeTime &&
                 this.newRecipe.elkeszites &&
                 this.recipeImage &&
                 this.newRecipe.ingredientsList.length > 0) {
-                    this.$store.commit('startLoading')
+                    this.$store.commit('startLoading');
                     let token = localStorage.getItem('token');
-                    fetch(`${process.env.BACKEND_URL}/recipes/recipe`, {
+                    let resp = await fetch(`${process.env.BACKEND_URL}/recipes/recipe`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -82,16 +84,24 @@ export default {
                             newRecipe: this.newRecipe,
                             newRecipeTags: this.actualChoosedFilterIds
                         })
-                    }).then((resp) => {
-                        return resp.json()
-                    }).then( async (recipeData) => {
-                        await this.uploadImage(recipeData.recipeId)
-                        this.$store.commit('stopLoading')
-                        this.$router.push({path: '/myrecipes'})
-                    })
+                    });
+                    if(resp.ok) {
+                        let recipeData = await resp.json();
+                        try {
+                            await this.uploadImage(recipeData.recipeId);
+                            this.$router.push({path: '/myrecipes'});
+                        }
+                        catch(ex) {
+                            this.$router.push({path: '/error'});
+                        }
+                    }
+                    else {
+                        this.$router.push({path: '/error'});
+                    }
+                    this.$store.commit('stopLoading');
             }
             else {
-                this.openPopup()
+                this.openPopup();
             }
         },
         cancel() {

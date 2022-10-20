@@ -25,6 +25,7 @@
     import Navigation from '../components/Navigation.vue'
     import RecipeEditor from '../components/RecipeEditor.vue'
     import Popup from '../components/Popup.vue'
+import { toRaw } from '@vue/reactivity'
 
 export default {
     name: 'EditRecipe',
@@ -51,23 +52,23 @@ export default {
     },
     methods: {
         refreshRecipe(changedRecipe) {
-            this.actualRecipe = changedRecipe
-            this.isModified = true
+            this.actualRecipe = changedRecipe;
+            this.isModified = true;
         },
         refreshImage(changedImage) {
-            this.recipeImage = changedImage
-            this.isModified = true
+            this.recipeImage = changedImage;
+            this.isModified = true;
         },
         refreshFilters(changedFilter) {
-            this.actualChoosedFilterIds = changedFilter
-            this.isModified = true
+            this.actualChoosedFilterIds = changedFilter;
+            this.isModified = true;
         },
         openPopup() {
-            this.isActivePopup = true
+            this.isActivePopup = true;
             document.documentElement.style.overflow = "hidden";
         },
         closePopup() {
-            this.isActivePopup = false
+            this.isActivePopup = false;
             document.documentElement.style.overflow = "auto";
         },
         async getRecipe(id) {
@@ -78,28 +79,35 @@ export default {
                     'Authorization': 'Bearer ' + token
                 }
             });
-            let recipeResp = await resp.json();
-            return recipeResp;
+            if(resp.ok) {
+                let recipeResp = await resp.json();
+                return recipeResp;
+            }
+            else {
+                throw new Error('Hiba az recept adatainak betöltése során.');
+            }
         },
         redirectToRecipePage(id) {
             this.$router.push({path: `/recipe/${id}`});
         },
         async uploadImage(recipeId) {
             let token = localStorage.getItem('token');
-            let formData = new FormData()
-            formData.append('recipeImage', this.recipeImage)
-            formData.append('recipeId', recipeId)
-            await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
+            let formData = new FormData();
+            formData.append('recipeImage', this.recipeImage);
+            formData.append('recipeId', recipeId);
+            let resp = await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json'
                 },
                 body: formData
-            })
-
+            });
+            if(!resp.ok) {
+                throw new Error('Hiba a kép feltöltésekor.');
+            }
         },
-        updateRecipe() {
+        async updateRecipe() {
             if(!this.isModified) {
                 this.redirectToRecipePage(this.recipeId);
                 return;
@@ -109,9 +117,9 @@ export default {
                 this.actualRecipe.recipeTime &&
                 this.actualRecipe.elkeszites &&
                 this.actualRecipe.ingredientsList.length > 0) {
-                    this.$store.commit('startLoading')
+                    this.$store.commit('startLoading');
                     let token = localStorage.getItem('token');
-                    fetch(`${process.env.BACKEND_URL}/recipes/recipe`, {
+                    let resp = await fetch(`${process.env.BACKEND_URL}/recipes/recipe`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -121,18 +129,25 @@ export default {
                             recipe: {recipeId: this.recipeId, ...this.actualRecipe},
                             tags: this.actualChoosedFilterIds
                         })
-                    }).then( async (resp) => {
-                        if(resp.ok) {
-                            if(this.recipeImage) {
-                                await this.uploadImage(this.recipeId)
+                    });
+                    if(resp.ok) {
+                        try {
+                            if(this.recipeImage){
+                                await this.uploadImage(this.recipeId);
                             }
-                            this.$store.commit('stopLoading')
-                            this.redirectToRecipePage(this.recipeId);
+                            this.redirectToRecipePage(this.recipeId); 
                         }
-                    })
+                        catch(ex) {
+                            this.$router.push({path: '/error'});
+                        }
+                    }
+                    else {
+                        this.$router.push({path: '/error'});
+                    }
+                    this.$store.commit('stopLoading');
             }
             else {
-                this.openPopup()
+                this.openPopup();
             }
         },
         cancel() {
@@ -140,19 +155,24 @@ export default {
         }
     },
     async created() {
-        this.$store.commit('startLoading')
-        let recipeResp = await this.getRecipe(this.$route.params.id);
-        this.recipeId = recipeResp.recipe.id
-        this.recipeTitle = recipeResp.recipe.title
-        this.recipeTime = recipeResp.recipe.elkeszitesi_ido
-        this.elkeszites = recipeResp.recipe.elkeszitesi_mod
-        this.ingredients = recipeResp.recipe.hozzavalok.split(',')
-        this.picture = recipeResp.recipe.picture
-        this.actualChoosedFilterIds = recipeResp.tags.map((tag) => {
-            return tag.tag_id
-        })
-        this.isLoaded = true
-        this.$store.commit('stopLoading')
+        this.$store.commit('startLoading');
+        try {
+            let recipeResp = await this.getRecipe(this.$route.params.id);
+            this.recipeId = recipeResp.recipe.id;
+            this.recipeTitle = recipeResp.recipe.title;
+            this.recipeTime = recipeResp.recipe.elkeszitesi_ido;
+            this.elkeszites = recipeResp.recipe.elkeszitesi_mod;
+            this.ingredients = recipeResp.recipe.hozzavalok.split(',');
+            this.picture = recipeResp.recipe.picture;
+            this.actualChoosedFilterIds = recipeResp.tags.map((tag) => {
+                return tag.tag_id;
+            });
+            this.isLoaded = true;
+        }
+        catch(ex) {
+            this.$router.push({path: '/error'});
+        }
+        this.$store.commit('stopLoading');
     }
 }
 </script>

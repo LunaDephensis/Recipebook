@@ -105,11 +105,11 @@
 
 <script>
 
-import WaveFooter from '../components/WaveFooter.vue'
-import Navigation from '../components/Navigation.vue'
-import FilterMenu from '../components/FilterMenu.vue'
-import {useCreateImage} from '../composables/createImage'
-import {useGetTotalRecipesCount} from '../composables/totalRecipesCounter'
+import WaveFooter from '../components/WaveFooter.vue';
+import Navigation from '../components/Navigation.vue';
+import FilterMenu from '../components/FilterMenu.vue';
+import {useCreateImage} from '../composables/createImage';
+import {useGetTotalRecipesCount} from '../composables/totalRecipesCounter';
 
 export default {
     name: 'MyRecipes',
@@ -117,9 +117,9 @@ export default {
         WaveFooter, Navigation, FilterMenu
     },
     setup() {
-        let createImage = useCreateImage()
-        let totalRecipesCounter = useGetTotalRecipesCount()
-        return { ...createImage, ...totalRecipesCounter }
+        let createImage = useCreateImage();
+        let totalRecipesCounter = useGetTotalRecipesCount();
+        return { ...createImage, ...totalRecipesCounter };
     },
     data() {
         return {
@@ -138,35 +138,45 @@ export default {
     methods: {
         filterChoosing(actualItem) {
            let actualFilter =  this.filterList.find((listItem) => {
-                return actualItem.id === listItem.id
+                return actualItem.id === listItem.id;
             })
-            actualFilter.choosed = !actualFilter.choosed
+            actualFilter.choosed = !actualFilter.choosed;
         },
         timeListToggle() {
-            this.isActiveTimeList = !this.isActiveTimeList
+            this.isActiveTimeList = !this.isActiveTimeList;
         },
         timeChoosingAndToggle(time) {
-            this.choosedTime = time
-            this.timeListToggle()
+            this.choosedTime = time;
+            this.timeListToggle();
         },
         async getRecipes() {
-            let token = localStorage.getItem('token')
-            let recipeURL = this.createRecipesURL()
+            let token = localStorage.getItem('token');
+            let recipeURL = this.createRecipesURL();
             let resp = await fetch(recipeURL, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
-            })
-            let recipes = await resp.json()
-            return recipes
+            });
+            if(resp.ok) {
+                let recipes = await resp.json();
+                return recipes;
+            }
+            else {
+                throw new Error('Hiba a receptek betöltése során.');
+            }
         },
         async nextPage() {
-            this.pageCounter++
-            let res = await this.getRecipes()
-            let newPage = res.recipes
-            this.actualRecipesCount = res.count
-            this.actualRecipes.push(...newPage)
+            try {
+                this.pageCounter++;
+                let res = await this.getRecipes();
+                let newPage = res.recipes;
+                this.actualRecipesCount = res.count;
+                this.actualRecipes.push(...newPage);
+            }
+            catch(ex) {
+                this.$router.push({path: '/error'});
+            }
         },
         async getLastRecipes() {
             let token = localStorage.getItem('token');
@@ -175,9 +185,14 @@ export default {
                 headers: {
                     'Authorization': 'Bearer ' + token
                 }
-            })
-            let lastRecipes = await resp.json()
-            return lastRecipes
+            });
+            if(resp.ok) {
+                let lastRecipes = await resp.json();
+                return lastRecipes;
+            }
+            else {
+                throw new Error('Hiba a "lastRecipes" betöltésekor.');
+            }
         },
         async getUserTags() {
             let token = localStorage.getItem('token');
@@ -187,72 +202,87 @@ export default {
                     'Authorization': 'Bearer ' + token
                 }
             });
-            let tags = await resp.json()
-            return tags
+            if(resp.ok) {
+                let tags = await resp.json();
+                return tags;
+            }
+            else {
+                throw new Error('Hiba a tag-ek betöltésekor.');
+            }
         },
         async searchRecipes() {
-            this.pageCounter = 0;
-            let res = await this.getRecipes()
-            this.actualRecipes = res.recipes
-            this.actualRecipesCount = res.count
-            this.$router.push({name: 'MyRecipes', hash: `#allRecipes`})
+            try {
+                this.pageCounter = 0;
+                let res = await this.getRecipes();
+                this.actualRecipes = res.recipes;
+                this.actualRecipesCount = res.count;
+                this.$router.push({name: 'MyRecipes', hash: `#allRecipes`});
+            }
+            catch(ex) {
+                this.$router.push({path: `/error`});
+            }
         },
         redirectToRecipePage(id) {
-            this.$router.push({path: `/recipe/${id}`})
+            this.$router.push({path: `/recipe/${id}`});
         },
         createRecipesURL() {
-            let searchURL = `${process.env.BACKEND_URL}/recipes?page=${this.pageCounter}`
+            let searchURL = `${process.env.BACKEND_URL}/recipes?page=${this.pageCounter}`;
             if(this.searchInputText) {
-                searchURL += `&title=${this.searchInputText}`
+                searchURL += `&title=${this.searchInputText}`;
             }
             if(this.choosedTime !== null) {
-                searchURL += `&time=${this.choosedTime}`
+                searchURL += `&time=${this.choosedTime}`;
             }
             let choosedTags = this.filterList.filter((tag) => {
-                return tag.choosed
+                return tag.choosed;
             }).map((choosedTag) => {
-                return choosedTag.id
+                return choosedTag.id;
             });
             if(choosedTags.length) {
-               let tags = choosedTags.join(',')
-               searchURL += `&tags=${tags}`
+               let tags = choosedTags.join(',');
+               searchURL += `&tags=${tags}`;
             }
-            return searchURL
+            return searchURL;
         }
 
     },
     computed: {
         actualFilterList() {
             return this.filterList.filter((item) => {
-                return item.choosed === false
-            })
+                return item.choosed === false;
+            });
         },
         actualChoosedFilters() {
             return this.filterList.filter((item) => {
-                return item.choosed === true
-            })
+                return item.choosed === true;
+            });
         },
         actualChoosedTime() {
             if(this.choosedTime === null) {
-                return 'nincs'
+                return 'nincs';
             }
             else {
-                return this.choosedTime + ' perc'
+                return this.choosedTime + ' perc';
             }
         }
     },
     async created() {
-        this.$store.commit('startLoading')
-        let res = await this.getRecipes()
-        this.actualRecipes = res.recipes
-        this.actualRecipesCount = res.count
-        this.lastRecipes = await this.getLastRecipes()
-        let tagsResp = await this.getUserTags()
-        this.filterList = tagsResp.map((tag) => {
-            tag.choosed = false
-            return tag
-        })
-        this.$store.commit('stopLoading')
+        this.$store.commit('startLoading');
+        try {
+            let res = await this.getRecipes();
+            this.actualRecipes = res.recipes;
+            this.actualRecipesCount = res.count;
+            this.lastRecipes = await this.getLastRecipes();
+            let tagsResp = await this.getUserTags();
+            this.filterList = tagsResp.map((tag) => {
+                tag.choosed = false;
+                return tag;
+            });
+        }
+        catch(ex) {
+            this.$router.push({path: '/error'});
+        }
+        this.$store.commit('stopLoading');
     }
 }
 </script>
