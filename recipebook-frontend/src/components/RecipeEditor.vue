@@ -68,7 +68,7 @@
 
 <script>
 
-import FilterMenu from '../components/FilterMenu.vue'
+import FilterMenu from '../components/FilterMenu.vue';
 
 export default {
     name: 'RecipeEditor',
@@ -101,9 +101,9 @@ export default {
     },
     methods: {
         uploadImage(event) {
-            let file = event.target.files[0]
-            this.$emit('uploadImage', file)
-            this.emitRecipe()
+            let file = event.target.files[0];
+            this.$emit('uploadImage', file);
+            this.emitRecipe();
         },
         isNumber(event) {
             let validNumbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -113,14 +113,14 @@ export default {
         },
         filterChoosing(actualItem) {
            let actualFilter =  this.filterList.find((listItem) => {
-                return actualItem.id === listItem.id
+                return actualItem.id === listItem.id;
             })
-            actualFilter.choosed = !actualFilter.choosed
+            actualFilter.choosed = !actualFilter.choosed;
             let choosedFilterIds = this.actualChoosedFilters.map((choosedTag) => {
                 return choosedTag.id;
             })
             this.$emit('changeFilterList', choosedFilterIds);
-            this.emitRecipe()
+            this.emitRecipe();
             
         },
         async getUserTags() {
@@ -131,16 +131,21 @@ export default {
                     'Authorization': 'Bearer ' + token
                 }
             });
-            let tags = await resp.json();
-            return tags;
+            if(resp.ok) {
+                let tags = await resp.json();
+                return tags;
+            }
+            else {
+                throw new Error('Hiba a tag-ek betöltésekor.');
+            }
         },
         deleteIngredient(i) {
             this.recipe.ingredientsList.splice(i, 1);
         },
         addIngredient() {
             if(this.newIngredientInputValue) {
-                this.recipe.ingredientsList.push(this.newIngredientInputValue)
-                this.newIngredientInputValue = ''
+                this.recipe.ingredientsList.push(this.newIngredientInputValue);
+                this.newIngredientInputValue = '';
             }
         },
         async createNewTag() {
@@ -149,24 +154,33 @@ export default {
                 let resp = await fetch(`${process.env.BACKEND_URL}/tags/newtag`, {
                     method: 'POST',
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + token
                     },
                     body: JSON.stringify({tagname: this.newTagInputValue})
                 });
                 if(resp.ok) {
-                    this.tagsResp = await this.getUserTags()
-                    this.newTagInputValue = '';
+                    try {
+                        this.tagsResp = await this.getUserTags();
+                        this.newTagInputValue = '';
+                    }
+                    catch(ex) {
+                        this.$router.push({path: '/error'});
+                    }
+                }
+                else {
+                    this.$router.push({path: '/error'});
                 }
             }
         },
         emitRecipe() {
-            this.$emit('changeRecipe', this.recipe)
+            this.$emit('changeRecipe', this.recipe);
         }
     },
     watch: {
         recipe: {
             handler() {
-                this.emitRecipe()
+                this.emitRecipe();
             },
             deep: true
         }
@@ -174,28 +188,33 @@ export default {
     computed: {
         actualFilterList() {
             return this.filterList.filter((item) => {
-                return item.choosed === false
+                return item.choosed === false;
             })
         },
         actualChoosedFilters() {
             return this.filterList.filter((item) => {
-                return item.choosed === true
-            })
+                return item.choosed === true;
+            });
         },
         filterList() {
             return this.tagsResp.map((tag) => {
                 if(!!this.tagIdList && this.tagIdList.includes(tag.id)) {
-                    tag.choosed = true
+                    tag.choosed = true;
                 }
                 else {
-                    tag.choosed = false
+                    tag.choosed = false;
                 }
-                return tag
+                return tag;
             });
         }
     },
     async created() {
-        this.tagsResp = await this.getUserTags()
+        try {
+            this.tagsResp = await this.getUserTags();
+        }
+        catch(ex) {
+            this.$router.push({path: '/error'});
+        }
     }
 }
 </script>

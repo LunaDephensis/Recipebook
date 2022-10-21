@@ -57,12 +57,17 @@ export default {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(newUser)
             });
-            if(resp.ok) {
-                let token = await resp.json();
-                this.redirectToMyRecipes(token);
-            }
-            else {
-                this.errorMessage = "Foglalt felhasználónév vagy email cím!";
+            switch(resp.status) {
+                case 200: 
+                    let token = await resp.json();
+                    this.redirectToMyRecipes(token);
+                    break;
+                case 403:
+                    this.errorMessage = "Foglalt felhasználónév vagy email cím!";
+                    break;
+                default: 
+                    this.errorMessage = "Sikertelen regisztráció! Próbálja újra.";
+                    break;
             }
         },
         redirectToMyRecipes(token) {

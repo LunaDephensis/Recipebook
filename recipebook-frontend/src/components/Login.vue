@@ -2,7 +2,7 @@
     <div class="loginBox">
         <h3>Lépj be!</h3>
         <div class="inputBox">
-            <span class="errorMessage" v-if="isloginError">Hibás felhasználónév vagy jelszó!</span>
+            <span class="errorMessage">{{errorMessage}}</span>
             <input name="username" type="text" v-model="username" @keyup.enter="login()" placeholder="Felhasználónév">
             <input name="password" type="password" v-model="password" @keyup.enter="login()" placeholder="Jelszó">
             <button class="loginBtn" @click="login()">Belépés</button>
@@ -17,9 +17,9 @@ export default {
     emits: ['registrationToggle'],
     data() {
         return {
-            isloginError: false,
             username: undefined,
-            password: undefined
+            password: undefined,
+            errorMessage: undefined
         }
     },
     methods: {
@@ -39,6 +39,18 @@ export default {
             }
             else {
                 this.isloginError = true;
+            }
+            switch(resp.status) {
+                case 200: 
+                    let token = await resp.json();
+                    this.redirectToMyRecipes(token);
+                    break;
+                case 403:
+                    this.errorMessage = "Hibás felhasználónév vagy jelszó!";
+                    break;
+                default: 
+                    this.errorMessage = "Bejelentkezés sikertelen! Próbálja újra.";
+                    break;
             }
         },
         redirectToMyRecipes(token) {

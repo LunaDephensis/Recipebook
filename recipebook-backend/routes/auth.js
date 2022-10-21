@@ -6,28 +6,33 @@ const tagRepo = require('../model/tag.repository');
 const AuthService = require('../services/auth.services');
 
 router.post('/login', async (req, res) => {
-    let user = await userRepo.getUser(req.body.username);
-    if(user && req.body.password === user.password) {
-        sendToken(req, res);
+    try {
+        let user = await userRepo.getUser(req.body.username);
+        if(user && req.body.password === user.password) {
+            sendToken(req, res);
+        }
+        else {
+            res.sendStatus(403);
+        }
     }
-    else {
-        res.sendStatus(403);
+    catch(ex) {
+        res.sendStatus(500);
     }
 });
 
 router.post('/signup', async (req, res) => {
-    let existUser = await userRepo.existUser(req.body.username, req.body.email);
-    if(!existUser) {
-        try {
+    try {
+        let existUser = await userRepo.existUser(req.body.username, req.body.email);
+        if(!existUser) {
             await userRepo.signUpUser(req.body.username, req.body.password, req.body.email);
             sendToken(req, res);
         }
-        catch(ex) {
-            res.sendStatus(500);
+        else {
+            res.sendStatus(403);
         }
     }
-    else {
-        res.sendStatus(403);
+    catch(ex) {
+        res.sendStatus(500);
     }
 });
 
