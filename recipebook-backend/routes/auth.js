@@ -36,6 +36,10 @@ router.post('/signup', async (req, res) => {
     }
 });
 
+router.get('/healthcheck', AuthService.verifyToken, (req, res) => {
+    res.sendStatus(200);
+});
+
 function sendToken(req, res) {
     const token = AuthService.signToken(req.body.username);
     res.json(token);

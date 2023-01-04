@@ -616,13 +616,13 @@ export default {
                         list-style: none;
                         color: $black;
                         width: 100%;
-                        padding: 5px 0;
+                        padding: 0.3em 0;
                         font-weight: 500;
-                        margin-left: 1em;
+                        margin-left: 0.5em;
                         display: flex;
-                        justify-content: flex-start;
+                        justify-content: flex-end;
+                        flex-direction: row-reverse;
                         align-items: center;
-                        word-break: break-all;
 
                         @include tablet {
                             font-size: 0.8em;
@@ -633,19 +633,19 @@ export default {
                             padding-right: 20px;
                         }
 
-                        &::before {
+                        /*&::before {
                             content: '\2022';
                             color: $blackborder;
                             display: inline-block;
                             font-size: 1.3em;
                             width: 1em;
                             margin-left: -1em;
-                        }
+                        }*/
 
                         ion-icon {
                             min-width: 1.3em;
                             font-size: 1.3em;
-                            margin-left: 5px;
+                            margin-right: 0.3em;
                             color: $black;
                             cursor: pointer;
                         }

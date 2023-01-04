@@ -33,13 +33,6 @@ export default {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(userData)
             });
-            if(resp.ok) {
-                let token = await resp.json();
-                this.redirectToMyRecipes(token);
-            }
-            else {
-                this.isloginError = true;
-            }
             switch(resp.status) {
                 case 200: 
                     let token = await resp.json();

@@ -142,6 +142,7 @@
         justify-content: center;
         align-items: center;
         flex-direction: column;
+        overflow-x: hidden;
 
         .mainContent {
             position: relative;
@@ -458,7 +459,7 @@
                             display: inline-block;
                             font-size: 1.3em;
                             width: 1em;
-                            margin-left: -1em;
+                            margin-left: -0.5em;
 
                             @include tabletS {
                                 color: $main1hover;
@@ -477,6 +478,13 @@
                 justify-content: center;
                 align-items: flex-start;
                 flex-direction: column;
+
+                @include tabletS {
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    width: 100%;
+                }
 
                 h3 {
                     color: $black;

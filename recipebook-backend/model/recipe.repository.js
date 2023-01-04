@@ -149,7 +149,7 @@ class RecipeRepository {
                 await t.query(saveNewKapcsolatQuery, [recipe.recipeId, tagId]);
             });
             needlessOldTagIds.forEach( async (tagId) => {
-                await pool.query(deleteOldTagQuery, [recipe.recipeId, tagId]);
+                await t.query(deleteOldTagQuery, [recipe.recipeId, tagId]);
             });
         });
     }
