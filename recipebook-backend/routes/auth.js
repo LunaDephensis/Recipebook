@@ -4,11 +4,12 @@ const jwt = require('jsonwebtoken');
 const userRepo = require('../model/user.repository');
 const tagRepo = require('../model/tag.repository');
 const AuthService = require('../services/auth.services');
+const bcrypt = require('bcrypt');
 
 router.post('/login', async (req, res) => {
     try {
         let user = await userRepo.getUser(req.body.username);
-        if(user && req.body.password === user.password) {
+        if(user && bcrypt.compareSync(req.body.password, user.password)) {
             sendToken(req, res);
         }
         else {
@@ -24,7 +25,8 @@ router.post('/signup', async (req, res) => {
     try {
         let existUser = await userRepo.existUser(req.body.username, req.body.email);
         if(!existUser) {
-            await userRepo.signUpUser(req.body.username, req.body.password, req.body.email);
+            const hash = bcrypt.hashSync(req.body.password, 10);
+            await userRepo.signUpUser(req.body.username, hash, req.body.email);
             sendToken(req, res);
         }
         else {

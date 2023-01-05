@@ -65,6 +65,7 @@
             </div>
             <div class="allRecipes" id="allRecipes">
                 <h2>Összes recepted</h2>
+                <h2 class="searchZero" v-if="isSearchCountZero">Nincs a keresési feltételeknek megfelelő recept.</h2>
 
                 <div class="addNewRecipe" v-if="totalRecipesCount === 0">
                     <h3>A recepttárad most még üres</h3>
@@ -123,7 +124,7 @@ export default {
     },
     data() {
         return {
-            isActiveFilterList: false,
+            isSearchCountZero: false,
             isActiveTimeList: false,
             choosedTime: null,
             cookingTimes: [30, 60, 90, 120, 180],
@@ -216,6 +217,9 @@ export default {
                 let res = await this.getRecipes();
                 this.actualRecipes = res.recipes;
                 this.actualRecipesCount = res.count;
+                if(this.actualRecipesCount === 0) {
+                    this.isSearchCountZero = true;
+                }
                 this.$router.push({name: 'MyRecipes', hash: `#allRecipes`});
             }
             catch(ex) {
@@ -238,7 +242,7 @@ export default {
             }).map((choosedTag) => {
                 return choosedTag.id;
             });
-            if(choosedTags.length) {
+            if(choosedTags.length > 0) {
                let tags = choosedTags.join(',');
                searchURL += `&tags=${tags}`;
             }
@@ -664,6 +668,11 @@ export default {
         @include mobile {
             font-size: 1.2em;
         }
+    }
+
+    .searchZero {
+        color: $main2;
+        align-self: center;
     }
 
     .addNewRecipe {

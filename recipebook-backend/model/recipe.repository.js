@@ -74,7 +74,7 @@ class RecipeRepository {
             selectedRecipesCountQuery += ` AND elkeszitesi_ido <= ${time}`;
         }
         let result = await pool.query(selectedRecipesCountQuery, [username]);
-        return result[0].count;
+        return Number(result[0].count);
     }
     async getSingleRecipe(recipeId) {
         let getSingleRecipeQuery = `SELECT * FROM recipebook_recipes WHERE id = $1;`;

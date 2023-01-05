@@ -8,6 +8,11 @@ const routes = [
     component: Main
   },
   {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('../views/NotFound.vue')
+  },
+  {
     path: '/myrecipes',
     name: 'MyRecipes',
     meta: {

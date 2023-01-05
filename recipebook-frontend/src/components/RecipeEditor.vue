@@ -633,6 +633,8 @@ export default {
                             padding-right: 20px;
                         }
 
+                        //Nézd meg, hogy neked jól néz -e így ki, és ha igen, törlöm a beforet
+
                         /*&::before {
                             content: '\2022';
                             color: $blackborder;
