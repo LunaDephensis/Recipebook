@@ -682,6 +682,7 @@ export default {
                     border-radius: 8px;
                     padding: 10px 20px;
                     color: $black;
+                    font-size: 0.9em;
                     resize: none;
 
                     &::placeholder {

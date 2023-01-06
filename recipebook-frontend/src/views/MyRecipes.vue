@@ -213,11 +213,12 @@ export default {
         },
         async searchRecipes() {
             try {
+                this.isSearchCountZero = false;
                 this.pageCounter = 0;
                 let res = await this.getRecipes();
                 this.actualRecipes = res.recipes;
                 this.actualRecipesCount = res.count;
-                if(this.actualRecipesCount === 0) {
+                if(this.actualRecipesCount === 0 && this.totalRecipesCount !== 0) {
                     this.isSearchCountZero = true;
                 }
                 this.$router.push({name: 'MyRecipes', hash: `#allRecipes`});
@@ -358,6 +359,7 @@ export default {
                 outline: none;
                 color: $main2;
                 font-weight: 500;
+                font-size: 0.9em;
             }
 
             ion-icon {
