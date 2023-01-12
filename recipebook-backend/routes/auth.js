@@ -7,7 +7,6 @@ const AuthService = require('../services/auth.services');
 const bcrypt = require('bcrypt');
 
 router.post('/login', async (req, res) => {
-    try {
         let user = await userRepo.getUser(req.body.username);
         if(user && bcrypt.compareSync(req.body.password, user.password)) {
             sendToken(req, res);
@@ -15,14 +14,9 @@ router.post('/login', async (req, res) => {
         else {
             res.sendStatus(403);
         }
-    }
-    catch(ex) {
-        res.sendStatus(500);
-    }
 });
 
 router.post('/signup', async (req, res) => {
-    try {
         let existUser = await userRepo.existUser(req.body.username, req.body.email);
         if(!existUser) {
             const hash = bcrypt.hashSync(req.body.password, 10);
@@ -32,10 +26,7 @@ router.post('/signup', async (req, res) => {
         else {
             res.sendStatus(403);
         }
-    }
-    catch(ex) {
-        res.sendStatus(500);
-    }
+   
 });
 
 router.get('/healthcheck', AuthService.verifyToken, (req, res) => {

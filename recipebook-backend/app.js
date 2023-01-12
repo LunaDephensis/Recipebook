@@ -1,4 +1,5 @@
 var express = require('express');
+require('express-async-errors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -23,5 +24,9 @@ app.use(cors({origin: [process.env.CLIENT_IP]}));
 app.use('/auth', authRouter);
 app.use('/recipes', recipesRouter);
 app.use('/tags', tagsRouter);
+app.use((err, req, res, next) => {
+    res.status(500);
+    res.json({message: 'Hiba a feldolgozás során'});
+});
 
 module.exports = app;

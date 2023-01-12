@@ -52,35 +52,18 @@ router.get('/singleRecipe', authService.verifyToken, async (req, res, next) => {
 });
 
 router.post('/recipe', authService.verifyToken, async (req, res, next) => {
-    try {
         let newRecipeId = await recipeRepo.saveRecipe(req.username, req.body.newRecipe, req.body.newRecipeTags);
         res.json({recipeId: newRecipeId});
-    }
-    catch(ex) {
-        res.sendStatus(500);
-    }
 });
 
 router.delete('/recipe', authService.verifyToken, async (req, res, next) => {
-    try {
         await recipeRepo.deleteSingleRecipe(req.query.id);
         res.sendStatus(200);
-    }
-    catch(ex) {
-        console.error(ex.message)
-        res.sendStatus(500);
-    }
 });
 
 router.put('/recipe', authService.verifyToken, async (req, res, next) => {
-    try {
         await recipeRepo.updateRecipe(req.body.recipe, req.body.tags);
         res.sendStatus(200);
-    }
-    catch(ex) {
-        console.error(ex.message)
-        res.sendStatus(500);
-    }
 });
 
 router.post('/uploadimage', [authService.verifyToken, upload.single('recipeImage')], async (req, res, next) => {
