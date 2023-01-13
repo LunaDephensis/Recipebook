@@ -16,6 +16,11 @@ router.post('/login', async (req, res) => {
         }
 });
 
+router.get('/logout', (req, res) => {
+    res.clearCookie('accessToken', {httpOnly: true});
+    res.sendStatus(200);
+});
+
 router.post('/signup', async (req, res) => {
         let existUser = await userRepo.existUser(req.body.username, req.body.email);
         if(!existUser) {
@@ -35,7 +40,8 @@ router.get('/healthcheck', AuthService.verifyToken, (req, res) => {
 
 function sendToken(req, res) {
     const token = AuthService.signToken(req.body.username);
-    res.json(token);
+    res.cookie('accessToken', token, {httpOnly: true});
+    res.sendStatus(200);
 }
 
 

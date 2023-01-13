@@ -31,12 +31,12 @@ export default {
             let resp = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
                 body: JSON.stringify(userData)
             });
             switch(resp.status) {
                 case 200: 
-                    let token = await resp.json();
-                    this.redirectToMyRecipes(token);
+                    this.redirectToMyRecipes();
                     break;
                 case 403:
                     this.errorMessage = "Hibás felhasználónév vagy jelszó!";
@@ -46,8 +46,7 @@ export default {
                     break;
             }
         },
-        redirectToMyRecipes(token) {
-            localStorage.setItem('token', token);
+        redirectToMyRecipes() {
             this.$router.push({path: '/myrecipes'});
         }
     }

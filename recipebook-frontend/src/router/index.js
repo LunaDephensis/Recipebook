@@ -71,25 +71,19 @@ const router = createRouter({
 })
 
 router.beforeEach( async (to, from, next) => {
-  if(to.matched.some(record => record.meta.requiresAuth)) {
-    let token = localStorage.getItem('token');
-    if(token) {
+  if(from.fullPath === to.fullPath) {
+    next();
+  }
+  else if(to.matched.some(record => record.meta.requiresAuth)) {
       let resp = await fetch(`${process.env.BACKEND_URL}/auth/healthcheck`, {
         method: 'GET',
-        headers: {
-          'Authorization': 'Bearer ' + token
-        }
+        credentials: 'include'
       });
       if(resp.ok) {
         next()
       }
       else {
-        localStorage.removeItem('token');
         next({name: 'Main'})
-      }
-    }
-    else {
-      next({name: 'Main'})
     }
   }
   else {

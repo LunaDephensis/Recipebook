@@ -55,12 +55,12 @@ export default {
             let resp = await fetch(`${process.env.BACKEND_URL}/auth/signup`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
+                credentials: 'include',
                 body: JSON.stringify(newUser)
             });
             switch(resp.status) {
                 case 200: 
-                    let token = await resp.json();
-                    this.redirectToMyRecipes(token);
+                    this.redirectToMyRecipes();
                     break;
                 case 403:
                     this.errorMessage = "Foglalt felhasználónév vagy email cím!";
@@ -70,8 +70,7 @@ export default {
                     break;
             }
         },
-        redirectToMyRecipes(token) {
-            localStorage.setItem('token', token);
+        redirectToMyRecipes() {
             this.$router.push({path: '/myrecipes'});
         }
     }

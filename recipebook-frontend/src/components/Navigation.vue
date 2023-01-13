@@ -36,9 +36,17 @@ export default {
             this.isActiveMobileMenu = false;
             this.$router.push({name: 'MyRecipes', hash: `#${point}`})
         },
-        logout() {
-            localStorage.removeItem('token')
-            this.$router.push({path: '/'});
+        async logout() {
+            let resp = await fetch(`${process.env.BACKEND_URL}/auth/logout`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+            if(resp.ok) {
+                this.$router.push({path: '/'});
+            }
+            else {
+                this.$router.push({path: '/error'});
+            }
         }
     }
 }

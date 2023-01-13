@@ -72,12 +72,9 @@ export default {
             document.documentElement.style.overflow = "auto";
         },
         async getRecipe(id) {
-            let token = localStorage.getItem('token');
             let resp = await fetch(`${process.env.BACKEND_URL}/recipes/singleRecipe?id=${id}`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
+                credentials: 'include'
             });
             if(resp.ok) {
                 let recipeResp = await resp.json();
@@ -91,16 +88,15 @@ export default {
             this.$router.push({path: `/recipe/${id}`});
         },
         async uploadImage(recipeId) {
-            let token = localStorage.getItem('token');
             let formData = new FormData();
             formData.append('recipeImage', this.recipeImage);
             formData.append('recipeId', recipeId);
             let resp = await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + token,
                     'Accept': 'application/json'
                 },
+                credentials: 'include',
                 body: formData
             });
             if(!resp.ok) {
@@ -118,13 +114,12 @@ export default {
                 this.actualRecipe.elkeszites &&
                 this.actualRecipe.ingredientsList.length > 0) {
                     this.$store.commit('startLoading');
-                    let token = localStorage.getItem('token');
                     let resp = await fetch(`${process.env.BACKEND_URL}/recipes/recipe`, {
                         method: 'PUT',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + token
+                            'Content-Type': 'application/json'
                         },
+                        credentials: 'include',
                         body: JSON.stringify({
                             recipe: {recipeId: this.recipeId, ...this.actualRecipe},
                             tags: this.actualChoosedFilterIds

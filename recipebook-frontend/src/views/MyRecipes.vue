@@ -151,13 +151,10 @@ export default {
             this.timeListToggle();
         },
         async getRecipes() {
-            let token = localStorage.getItem('token');
             let recipeURL = this.createRecipesURL();
             let resp = await fetch(recipeURL, {
                 method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
+                credentials: 'include'
             });
             if(resp.ok) {
                 let recipes = await resp.json();
@@ -180,12 +177,9 @@ export default {
             }
         },
         async getLastRecipes() {
-            let token = localStorage.getItem('token');
             let resp = await fetch(`${process.env.BACKEND_URL}/recipes/lastrecipes`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
+                credentials: 'include'
             });
             if(resp.ok) {
                 let lastRecipes = await resp.json();
@@ -196,12 +190,9 @@ export default {
             }
         },
         async getUserTags() {
-            let token = localStorage.getItem('token');
             let resp = await fetch(`${process.env.BACKEND_URL}/tags`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
+                credentials: 'include'
             });
             if(resp.ok) {
                 let tags = await resp.json();

@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/upload', express.static(path.join(__dirname, 'upload')));
-app.use(cors({origin: [process.env.CLIENT_IP]}));
+app.use(cors({origin: [process.env.CLIENT_IP], credentials: true}));
 
 app.use('/auth', authRouter);
 app.use('/recipes', recipesRouter);
@@ -27,6 +27,7 @@ app.use('/tags', tagsRouter);
 app.use((err, req, res, next) => {
     res.status(500);
     res.json({message: 'Hiba a feldolgozás során'});
+    console.log(err);
 });
 
 module.exports = app;

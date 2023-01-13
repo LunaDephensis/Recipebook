@@ -49,16 +49,15 @@ export default {
             document.documentElement.style.overflow = "auto";
         },
         async uploadImage(recipeId) {
-            let token = localStorage.getItem('token');
             let formData = new FormData();
             formData.append('recipeImage', this.recipeImage);
             formData.append('recipeId', recipeId);
             let resp = await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
                 method: 'POST',
                 headers: {
-                            'Authorization': 'Bearer ' + token,
                             'Accept': 'application/json'
                         },
+                credentials: 'include',
                 body: formData
             });
             if(!resp.ok) {
@@ -73,13 +72,12 @@ export default {
                 this.recipeImage &&
                 this.newRecipe.ingredientsList.length > 0) {
                     this.$store.commit('startLoading');
-                    let token = localStorage.getItem('token');
                     let resp = await fetch(`${process.env.BACKEND_URL}/recipes/recipe`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + token
                         },
+                        credentials: 'include',
                         body: JSON.stringify({
                             newRecipe: this.newRecipe,
                             newRecipeTags: this.actualChoosedFilterIds

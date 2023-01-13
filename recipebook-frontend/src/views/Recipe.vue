@@ -80,13 +80,10 @@
                 this.$router.push({path: `/recipe/edit/${id}`});
             },
             async getRecipe(id) {
-                let token = localStorage.getItem('token');
                 let resp = await fetch(`${process.env.BACKEND_URL}/recipes/singleRecipe?id=${id}`, {
                     method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    }
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'include'
                 });
                 if(resp.ok) {
                     let recipeResp = await resp.json();
@@ -97,13 +94,10 @@
                 }                
             },
             async deleteRecipe(id) {
-                let token = localStorage.getItem('token');
                 let resp = await fetch(`${process.env.BACKEND_URL}/recipes/recipe?id=${id}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    }
+                    headers: {'Content-Type': 'application/json'},
+                    credentials: 'include'
                 });
                 if(resp.ok) {
                     this.$router.push({path: `/myrecipes`});

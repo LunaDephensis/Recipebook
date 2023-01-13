@@ -124,12 +124,9 @@ export default {
             
         },
         async getUserTags() {
-            let token = localStorage.getItem('token');
             let resp = await fetch(`${process.env.BACKEND_URL}/tags`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                }
+                credentials: 'include'
             });
             if(resp.ok) {
                 let tags = await resp.json();
@@ -150,13 +147,12 @@ export default {
         },
         async createNewTag() {
             if(this.newTagInputValue !== '') {
-                let token = localStorage.getItem('token');
                 let resp = await fetch(`${process.env.BACKEND_URL}/tags/newtag`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
                     },
+                    credentials: 'include',
                     body: JSON.stringify({tagname: this.newTagInputValue})
                 });
                 if(resp.ok) {
