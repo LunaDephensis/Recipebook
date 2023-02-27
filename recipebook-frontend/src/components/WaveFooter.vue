@@ -10,8 +10,8 @@
             <div class="picfrom">
                 <h5>pictures & icons from:</h5>
                 <ul>
-                    <li><a href="https://www.pexels.com/">https://www.pexels.com/</a></li>
-                    <li><a href="https://ionic.io/"><ion-icon name="logo-ionic"></ion-icon> ionicons</a></li>
+                    <li><a href="https://www.pexels.com/" target="_blank">https://www.pexels.com/</a></li>
+                    <li><a href="https://ionic.io/" target="_blank"><ion-icon name="logo-ionic"></ion-icon> ionicons</a></li>
                 </ul>
             </div>
     </footer>

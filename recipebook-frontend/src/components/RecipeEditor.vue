@@ -74,7 +74,7 @@ export default {
     name: 'RecipeEditor',
     props: {
         recipeTitle: String,
-        recipeTime: String,
+        recipeTime: Number,
         ingredients: {type: Array, default: []},
         elkeszites: String,
         picture: String,
