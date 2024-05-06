@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const recipeRepo = require('../model/recipe.repository');
-const kapcsolatRepo = require('../model/kapcsolat.repository');
 const authService = require('../services/auth.services');
-const pool = require('../model/pool');
 const upload = require('../services/upload.services');
 
 router.get('/', authService.verifyToken, async (req, res, next) => {
