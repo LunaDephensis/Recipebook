@@ -15,7 +15,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-    res.clearCookie('accessToken', {httpOnly: true});
+    res.clearCookie('accessToken', { httpOnly: true, secure: true, sameSite: 'none' });
     res.sendStatus(200);
 });
 
@@ -38,7 +38,7 @@ router.get('/healthcheck', AuthService.verifyToken, (req, res) => {
 
 function sendToken(req, res) {
     const token = AuthService.signToken(req.body.username);
-    res.cookie('accessToken', token, {httpOnly: true});
+    res.cookie('accessToken', token, { httpOnly: true, secure: true, sameSite: 'none' });
     res.sendStatus(200);
 }
 
