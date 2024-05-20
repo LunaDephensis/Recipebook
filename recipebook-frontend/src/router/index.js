@@ -75,7 +75,7 @@ router.beforeEach( async (to, from, next) => {
     next();
   }
   else if(to.matched.some(record => record.meta.requiresAuth)) {
-      let resp = await fetch(`${process.env.BACKEND_URL}/auth/healthcheck`, {
+      let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/auth/healthcheck`, {
         method: 'GET',
         credentials: 'include'
       });

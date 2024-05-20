@@ -2,7 +2,7 @@ const multer = require('multer');
 
 const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'upload');
+        cb(null, process.env.IMAGE_DIR);
     },
     filename: (req, file, cb) => {
         const ext = file.mimetype.split('/')[1];

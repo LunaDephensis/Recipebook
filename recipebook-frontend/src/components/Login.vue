@@ -28,7 +28,7 @@ export default {
                 username: this.username,
                 password: this.password
             };
-            let resp = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
+            let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/auth/login`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'include',

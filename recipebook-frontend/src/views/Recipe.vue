@@ -80,7 +80,7 @@
                 this.$router.push({path: `/recipe/edit/${id}`});
             },
             async getRecipe(id) {
-                let resp = await fetch(`${process.env.BACKEND_URL}/recipes/singleRecipe?id=${id}`, {
+                let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/recipes/singleRecipe?id=${id}`, {
                     method: 'GET',
                     headers: {'Content-Type': 'application/json'},
                     credentials: 'include'
@@ -94,7 +94,7 @@
                 }                
             },
             async deleteRecipe(id) {
-                let resp = await fetch(`${process.env.BACKEND_URL}/recipes/recipe?id=${id}`, {
+                let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/recipes/recipe?id=${id}`, {
                     method: 'DELETE',
                     headers: {'Content-Type': 'application/json'},
                     credentials: 'include'

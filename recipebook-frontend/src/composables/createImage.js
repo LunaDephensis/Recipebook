@@ -3,7 +3,7 @@ export function useCreateImage() {
         if(!image) {
             return ''
         }
-        let imgurl = `${process.env.BACKEND_URL}/upload/${image}`
+        let imgurl = `${process.env.VUE_APP_BACKEND_URL}/upload/${image}`
         return imgurl
     }
     return { createImageURL }

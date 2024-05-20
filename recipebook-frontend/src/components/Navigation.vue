@@ -37,7 +37,7 @@ export default {
             this.$router.push({name: 'MyRecipes', hash: `#${point}`})
         },
         async logout() {
-            let resp = await fetch(`${process.env.BACKEND_URL}/auth/logout`, {
+            let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/auth/logout`, {
                 method: 'GET',
                 credentials: 'include'
             });

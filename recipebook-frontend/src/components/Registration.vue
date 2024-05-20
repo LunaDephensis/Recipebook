@@ -52,7 +52,7 @@ export default {
 
             this.errorMessage = undefined;
 
-            let resp = await fetch(`${process.env.BACKEND_URL}/auth/signup`, {
+            let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/auth/signup`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'include',

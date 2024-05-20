@@ -72,7 +72,7 @@ export default {
             document.documentElement.style.overflow = "auto";
         },
         async getRecipe(id) {
-            let resp = await fetch(`${process.env.BACKEND_URL}/recipes/singleRecipe?id=${id}`, {
+            let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/recipes/singleRecipe?id=${id}`, {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -91,7 +91,7 @@ export default {
             let formData = new FormData();
             formData.append('recipeImage', this.recipeImage);
             formData.append('recipeId', recipeId);
-            let resp = await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
+            let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/recipes/uploadimage`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json'
@@ -114,7 +114,7 @@ export default {
                 this.actualRecipe.elkeszites &&
                 this.actualRecipe.ingredientsList.length > 0) {
                     this.$store.commit('startLoading');
-                    let resp = await fetch(`${process.env.BACKEND_URL}/recipes/recipe`, {
+                    let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/recipes/recipe`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'

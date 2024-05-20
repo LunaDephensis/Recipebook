@@ -6,7 +6,7 @@ export function useGetTotalRecipesCount() {
     let totalRecipesCount = ref(0);
 
     onMounted(async () => {
-            let resp = await fetch(`${process.env.BACKEND_URL}/recipes/totalCount`, {
+            let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/recipes/totalCount`, {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'},
                 credentials: 'include'

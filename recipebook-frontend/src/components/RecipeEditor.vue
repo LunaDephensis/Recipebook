@@ -124,7 +124,7 @@ export default {
             
         },
         async getUserTags() {
-            let resp = await fetch(`${process.env.BACKEND_URL}/tags`, {
+            let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/tags`, {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -147,7 +147,7 @@ export default {
         },
         async createNewTag() {
             if(this.newTagInputValue !== '') {
-                let resp = await fetch(`${process.env.BACKEND_URL}/tags/newtag`, {
+                let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/tags/newtag`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -177,7 +177,7 @@ export default {
             }
         },
         async getLastRecipes() {
-            let resp = await fetch(`${process.env.BACKEND_URL}/recipes/lastrecipes`, {
+            let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/recipes/lastrecipes`, {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -190,7 +190,7 @@ export default {
             }
         },
         async getUserTags() {
-            let resp = await fetch(`${process.env.BACKEND_URL}/tags`, {
+            let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/tags`, {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -222,7 +222,7 @@ export default {
             this.$router.push({path: `/recipe/${id}`});
         },
         createRecipesURL() {
-            let searchURL = `${process.env.BACKEND_URL}/recipes?page=${this.pageCounter}`;
+            let searchURL = `${process.env.VUE_APP_BACKEND_URL}/recipes?page=${this.pageCounter}`;
             if(this.searchInputText) {
                 searchURL += `&title=${this.searchInputText}`;
             }

@@ -52,7 +52,7 @@ export default {
             let formData = new FormData();
             formData.append('recipeImage', this.recipeImage);
             formData.append('recipeId', recipeId);
-            let resp = await fetch(`${process.env.BACKEND_URL}/recipes/uploadimage`, {
+            let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/recipes/uploadimage`, {
                 method: 'POST',
                 headers: {
                             'Accept': 'application/json'
@@ -72,7 +72,7 @@ export default {
                 this.recipeImage &&
                 this.newRecipe.ingredientsList.length > 0) {
                     this.$store.commit('startLoading');
-                    let resp = await fetch(`${process.env.BACKEND_URL}/recipes/recipe`, {
+                    let resp = await fetch(`${process.env.VUE_APP_BACKEND_URL}/recipes/recipe`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
