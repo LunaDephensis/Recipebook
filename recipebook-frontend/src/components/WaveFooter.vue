@@ -3,7 +3,6 @@
         <div class="wave"></div>
             <ul class="sci">
                 <li><a target="_blank" href="https://github.com/LunaDephensis/Recipebook"><ion-icon name="logo-github"></ion-icon></a></li>
-                <li><a target="_blank" href="https://www.linkedin.com/in/nikolett-z%C3%A1mb%C3%B3-0a9942285/"><ion-icon name="logo-linkedin"></ion-icon></a></li>
             </ul>
             <h4 class="codeBy">Code by <span>Zámbó Nikolett</span></h4>
             <div class="picfrom">
